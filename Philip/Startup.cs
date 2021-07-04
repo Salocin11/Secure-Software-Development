@@ -10,6 +10,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Philip.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI;
+using Philip.Models;
 
 namespace Philip
 {
@@ -29,7 +32,42 @@ namespace Philip
 
             services.AddDbContext<PhilipContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("PhilipContext")));
+            services.AddIdentity<ApplicationUser, Microsoft.AspNetCore.Identity.IdentityRole>()
+       .AddDefaultUI()
+        .AddEntityFrameworkStores<PhilipContext>()
+        .AddDefaultTokenProviders();
+            services.AddMvc()
+            .AddRazorPagesOptions(options =>
+            {
+                // options.Conventions.AllowAnonymousToFolder("/Movies");
+                // options.Conventions.AuthorizePage("/Movies/Create");
+                //  options.Conventions.AuthorizeAreaPage("Identity", "/Manage/Accounts");
+                options.Conventions.AuthorizeFolder("/Article");
+            });
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Password settings
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 5;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequiredUniqueChars = 1;
+
+                // Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 1;
+                options.Lockout.AllowedForNewUsers = true;
+
+                // User settings
+                options.User.RequireUniqueEmail = true;
+            });
+
+
+
         }
+
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -47,6 +85,7 @@ namespace Philip
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseAuthentication();
 
             app.UseRouting();
 
@@ -59,3 +98,4 @@ namespace Philip
         }
     }
 }
+
