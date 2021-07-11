@@ -9,9 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Philip.Data;
 using Philip.Models;
 
-namespace Philip.Pages.Articles
+namespace Philip.Pages.Audit
 {
-    //[Authorize(Roles = "Admin, Users")]
     public class EditModel : PageModel
     {
         private readonly Philip.Data.PhilipContext _context;
@@ -22,7 +21,7 @@ namespace Philip.Pages.Articles
         }
 
         [BindProperty]
-        public Article Article { get; set; }
+        public AuditRecord AuditRecord { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -31,9 +30,9 @@ namespace Philip.Pages.Articles
                 return NotFound();
             }
 
-            Article = await _context.Article.FirstOrDefaultAsync(m => m.ID == id);
+            AuditRecord = await _context.AuditRecords.FirstOrDefaultAsync(m => m.Audit_ID == id);
 
-            if (Article == null)
+            if (AuditRecord == null)
             {
                 return NotFound();
             }
@@ -49,28 +48,15 @@ namespace Philip.Pages.Articles
                 return Page();
             }
 
-            _context.Attach(Article).State = EntityState.Modified;
+            _context.Attach(AuditRecord).State = EntityState.Modified;
 
             try
             {
-                //await _context.SaveChangesAsync();
-
-                // Once a record is edited, create an audit record
-                if (await _context.SaveChangesAsync() > 0)
-                {
-                    var auditrecord = new AuditRecord();
-                    auditrecord.AuditActionType = "Edit Post Record";
-                    auditrecord.DateTimeStamp = DateTime.Now;
-                    auditrecord.KeyPostFieldID = Article.ID;
-                    var userID = User.Identity.Name.ToString();
-                    auditrecord.Username = userID;
-                    _context.AuditRecords.Add(auditrecord);
-                    await _context.SaveChangesAsync();
-                }
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ArticleExists(Article.ID))
+                if (!AuditRecordExists(AuditRecord.Audit_ID))
                 {
                     return NotFound();
                 }
@@ -83,9 +69,9 @@ namespace Philip.Pages.Articles
             return RedirectToPage("./Index");
         }
 
-        private bool ArticleExists(int id)
+        private bool AuditRecordExists(int id)
         {
-            return _context.Article.Any(e => e.ID == id);
+            return _context.AuditRecords.Any(e => e.Audit_ID == id);
         }
     }
 }

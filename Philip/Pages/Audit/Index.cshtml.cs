@@ -8,9 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Philip.Data;
 using Philip.Models;
 
-namespace Philip.Pages.Articles
+namespace Philip.Pages.Audit
 {
-    //[Authorize(Roles = "Admin, Users")]
     public class IndexModel : PageModel
     {
         private readonly Philip.Data.PhilipContext _context;
@@ -20,11 +19,11 @@ namespace Philip.Pages.Articles
             _context = context;
         }
 
-        public IList<Article> Article { get;set; }
+        public IList<AuditRecord> AuditRecord { get;set; }
 
         public async Task OnGetAsync()
         {
-            Article = await _context.Article.ToListAsync();
+            AuditRecord = await _context.AuditRecords.ToListAsync();
         }
     }
 }
