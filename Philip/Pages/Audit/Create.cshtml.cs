@@ -8,9 +8,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Philip.Data;
 using Philip.Models;
 
-namespace Philip.Pages.Articles
+namespace Philip.Pages.Audit
 {
-    //[Authorize(Roles = "Admin")]
     public class CreateModel : PageModel
     {
         private readonly Philip.Data.PhilipContext _context;
@@ -26,7 +25,7 @@ namespace Philip.Pages.Articles
         }
 
         [BindProperty]
-        public Article Article { get; set; }
+        public AuditRecord AuditRecord { get; set; }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://aka.ms/RazorPagesCRUD.
@@ -37,25 +36,8 @@ namespace Philip.Pages.Articles
                 return Page();
             }
 
-            _context.Article.Add(Article);
-            //await _context.SaveChangesAsync();
-
-            // Once a record is added, create an audit record
-            if (await _context.SaveChangesAsync() > 0)
-            {
-                // Create an auditrecord object
-                var auditrecord = new AuditRecord();
-                auditrecord.AuditActionType = "Add Post Record";
-                auditrecord.DateTimeStamp = DateTime.Now;
-                auditrecord.KeyPostFieldID = Article.ID;
-                // Get current logged-in user
-                var userID = User.Identity.Name.ToString();
-                auditrecord.Username = userID;
-
-                _context.AuditRecords.Add(auditrecord);
-                await _context.SaveChangesAsync();
-            }
-
+            _context.AuditRecords.Add(AuditRecord);
+            await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }
