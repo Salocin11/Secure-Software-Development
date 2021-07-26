@@ -1,0 +1,45 @@
+﻿@page
+@model Philip.Pages.ReportVuln.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Feedback</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Feedback.ID" />
+            <div class="form-group">
+                <label asp-for="Feedback.Email" class="control-label"></label>
+                <input asp-for="Feedback.Email" class="form-control" />
+                <span asp-validation-for="Feedback.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Feedback.Title" class="control-label"></label>
+                <input asp-for="Feedback.Title" class="form-control" />
+                <span asp-validation-for="Feedback.Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Feedback.Content" class="control-label"></label>
+                <input asp-for="Feedback.Content" class="form-control" />
+                <span asp-validation-for="Feedback.Content" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
