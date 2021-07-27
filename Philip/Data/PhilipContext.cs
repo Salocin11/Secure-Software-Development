@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Philip.Data
 {
-    public class PhilipContext : IdentityDbContext<ApplicationUser>
+    public class PhilipContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
         public PhilipContext (DbContextOptions<PhilipContext> options)
             : base(options)

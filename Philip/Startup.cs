@@ -32,7 +32,7 @@ namespace Philip
 
             services.AddDbContext<PhilipContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("PhilipContext")));
-            services.AddIdentity<ApplicationUser, Microsoft.AspNetCore.Identity.IdentityRole>()
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
        .AddDefaultUI()
         .AddEntityFrameworkStores<PhilipContext>()
         .AddDefaultTokenProviders();
