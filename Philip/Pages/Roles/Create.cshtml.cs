@@ -5,20 +5,19 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Identity;
 using Philip.Data;
 using Philip.Models;
-using Microsoft.AspNetCore.Authorization;
 
-namespace Philip.Pages.Audit
+namespace Philip.Pages.Roles
 {
-    [Authorize(Roles = "Admin")]
     public class CreateModel : PageModel
     {
-        private readonly Philip.Data.PhilipContext _context;
+        private readonly RoleManager<ApplicationRole> _roleManager;
 
-        public CreateModel(Philip.Data.PhilipContext context)
+        public CreateModel(RoleManager<ApplicationRole> roleManager)
         {
-            _context = context;
+            _roleManager = roleManager;
         }
 
         public IActionResult OnGet()
@@ -27,7 +26,7 @@ namespace Philip.Pages.Audit
         }
 
         [BindProperty]
-        public AuditRecord AuditRecord { get; set; }
+        public ApplicationRole ApplicationRole { get; set; }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://aka.ms/RazorPagesCRUD.
@@ -38,8 +37,10 @@ namespace Philip.Pages.Audit
                 return Page();
             }
 
-            _context.AuditRecords.Add(AuditRecord);
-            await _context.SaveChangesAsync();
+            ApplicationRole.CreatedDate = DateTime.UtcNow;
+            ApplicationRole.IPAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+
+            IdentityResult roleResult = await _roleManager.CreateAsync(ApplicationRole);
 
             return RedirectToPage("./Index");
         }
