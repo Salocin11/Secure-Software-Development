@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Philip.Data;
-using System;
-using System.Linq;
 
 namespace Philip.Models
 {
