@@ -13,11 +13,15 @@ using Philip.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Philip.Models;
+using AspNetCoreHero.ToastNotification;
+using AspNetCoreHero.ToastNotification.Extensions;
+
 
 namespace Philip
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -28,6 +32,7 @@ namespace Philip
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddRazorPages();
 
             services.AddDbContext<PhilipContext>(options =>
@@ -62,7 +67,7 @@ namespace Philip
                 // User settings
                 options.User.RequireUniqueEmail = true;
             });
-
+            services.AddNotyf(config => { config.DurationInSeconds = 10; config.IsDismissable = true; config.Position = NotyfPosition.TopRight; });
 
 
         }
@@ -87,6 +92,7 @@ namespace Philip
             app.UseStaticFiles();
             app.UseAuthentication();
 
+
             app.UseRouting();
 
             app.UseAuthorization();
@@ -95,6 +101,10 @@ namespace Philip
             {
                 endpoints.MapRazorPages();
             });
+            app.UseNotyf();
+
+
+
         }
     }
 }

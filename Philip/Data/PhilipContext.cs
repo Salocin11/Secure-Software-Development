@@ -25,5 +25,7 @@ namespace Philip.Data
 
         public DbSet<Philip.Models.Article> Article { get; set; }
         public DbSet<Philip.Models.AuditRecord> AuditRecords { get; set; }
+        public DbSet<Philip.Models.Feedback> Feedback { get; set; }
+
     }
 }
