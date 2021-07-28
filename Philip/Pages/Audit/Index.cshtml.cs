@@ -5,11 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Philip.Data;
 using Philip.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Philip.Pages.Audit
 {
+    [Authorize(Roles = "Admin")]
     public class IndexModel : PageModel
     {
         private readonly Philip.Data.PhilipContext _context;
@@ -20,10 +23,21 @@ namespace Philip.Pages.Audit
         }
 
         public IList<AuditRecord> AuditRecord { get;set; }
-
+        [BindProperty(SupportsGet = true)]
+        public string SearchString { get; set; }
+        public SelectList Audits { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public string AuditAction { get; set; }
         public async Task OnGetAsync()
         {
+            var audits = from m in _context.AuditRecords
+                         select m;
+            if (!string.IsNullOrEmpty(SearchString))
+            {
+                audits = audits.Where(s => s.AuditActionType.Contains(SearchString));
+            }
             AuditRecord = await _context.AuditRecords.ToListAsync();
         }
     }
+   
 }

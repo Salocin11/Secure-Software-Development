@@ -10,11 +10,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Philip.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI;
+using Philip.Models;
+using AspNetCoreHero.ToastNotification;
+using AspNetCoreHero.ToastNotification.Extensions;
+
 
 namespace Philip
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -25,11 +32,47 @@ namespace Philip
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddRazorPages();
 
             services.AddDbContext<PhilipContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("PhilipContext")));
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
+       .AddDefaultUI()
+        .AddEntityFrameworkStores<PhilipContext>()
+        .AddDefaultTokenProviders();
+            services.AddMvc()
+            .AddRazorPagesOptions(options =>
+            {
+                // options.Conventions.AllowAnonymousToFolder("/Movies");
+                // options.Conventions.AuthorizePage("/Movies/Create");
+                //  options.Conventions.AuthorizeAreaPage("Identity", "/Manage/Accounts");
+                options.Conventions.AuthorizeFolder("/Article");
+            });
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Password settings
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 5;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequiredUniqueChars = 1;
+
+                // Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 1;
+                options.Lockout.AllowedForNewUsers = true;
+
+                // User settings
+                options.User.RequireUniqueEmail = true;
+            });
+            services.AddNotyf(config => { config.DurationInSeconds = 10; config.IsDismissable = true; config.Position = NotyfPosition.TopRight; });
+
+
         }
+
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -47,6 +90,8 @@ namespace Philip
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseAuthentication();
+
 
             app.UseRouting();
 
@@ -56,6 +101,11 @@ namespace Philip
             {
                 endpoints.MapRazorPages();
             });
+            app.UseNotyf();
+
+
+
         }
     }
 }
+
