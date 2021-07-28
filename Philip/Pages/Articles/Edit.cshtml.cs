@@ -31,7 +31,9 @@ namespace Philip.Pages.Articles
                 return NotFound();
             }
 
-            Article = await _context.Article.FirstOrDefaultAsync(m => m.ID == id);
+            Article = await _context.Article
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ID == id);
 
             if (Article == null)
             {
@@ -42,15 +44,48 @@ namespace Philip.Pages.Articles
 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int id)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
+            var articleToUpdate = await _context.Article
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (articleToUpdate == null)
+            {
+                return HandleDeletedArticle();
+            }
+            _context.Entry(articleToUpdate)
+                .Property("RowVersion").OriginalValue = Article.RowVersion;
+            if (await TryUpdateModelAsync<Article>(
+                articleToUpdate,
+                "Article",
+                s => s.Title, s => s.Author, s => s.ReleaseDate, s => s.Content))
+            {
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return RedirectToPage("./Index");
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    var exceptionEntry = ex.Entries.Single();
+                    var clientValues = (Article)exceptionEntry.Entity;
+                    var databaseEntry = exceptionEntry.GetDatabaseValues();
+                    if (databaseEntry == null)
+                    {
+                        ModelState.AddModelError(string.Empty, "Unable to save. " +
+                            "The Article was deleted by another user.");
+                        return Page();
+                    }
+                    var dbValues = (Article)databaseEntry.ToObject();
+                    await setDbErrorMessage(dbValues, clientValues, _context);
+                    Article.RowVersion = (byte[])dbValues.RowVersion;
+                    ModelState.Remove("Article.RowVersion");
+                }
 
-            _context.Attach(Article).State = EntityState.Modified;
-
+            }
             try
             {
                 //await _context.SaveChangesAsync();
@@ -70,22 +105,53 @@ namespace Philip.Pages.Articles
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ArticleExists(Article.ID))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                
             }
 
-            return RedirectToPage("./Index");
+            return Page();
         }
+
+
+        private IActionResult HandleDeletedArticle()
+        {
+            var deletedArticle = new Article();
+            ModelState.AddModelError(string.Empty,
+                "Unable to save. The Article was deleted by another user.");
+            return Page();
+        }
+        private async Task setDbErrorMessage(Article dbValues, Article clientValues, PhilipContext context)
+        {
+            if (dbValues.Author != clientValues.Author)
+            {
+                ModelState.AddModelError("Article.Author", $"Current value: {dbValues.Author}");
+            }
+            if (dbValues.Title != clientValues.Title)
+            {
+                ModelState.AddModelError("Article.Title", $"Current value: {dbValues.Title}");
+            }
+            if (dbValues.ReleaseDate != clientValues.ReleaseDate)
+            {
+                ModelState.AddModelError("Article.ReleaseDate", $"Current value: {dbValues.ReleaseDate}");
+            }
+            if (dbValues.Content != clientValues.Content)
+            {
+                ModelState.AddModelError("Article.Content", $"Current value: {dbValues.Content}");
+            }
+            ModelState.AddModelError(string.Empty,
+                "The record you attempted to edit "
+                 + "was modified by another user after you. The "
+                 + "edit operation was canceled and the current values in the database "
+                 + "have been displayed. If you still want to edit this record, click "
+                 + "the Save button again.");
+        }
+
+
 
         private bool ArticleExists(int id)
         {
             return _context.Article.Any(e => e.ID == id);
         }
+
     }
 }
+

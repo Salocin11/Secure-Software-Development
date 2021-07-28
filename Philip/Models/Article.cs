@@ -23,5 +23,7 @@ namespace Philip.Models
         public DateTime ReleaseDate { get; set; }
         [Required]
         public string Content { get; set; } // Database should be using the Blob data type
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 }
