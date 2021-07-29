@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Philip.Data;
 
 namespace Philip.Models
@@ -19,10 +21,11 @@ namespace Philip.Models
                 // Look for any movies.
                 if (context.Article.Any())
                 {
-                    return;   // DB has been seeded
+                    // DB has been seeded
                 }
-
-                context.Article.AddRange(
+                else
+                {
+                    context.Article.AddRange(
                     new Article
                     {
                         Title = "SQL Injection",
@@ -55,7 +58,69 @@ namespace Philip.Models
                         Content = "Hashing is the process of transforming any given key or a string of characters into another value. This is usually represented by a shorter, fixed-length value or key that represents and makes it easier to find or employ the original string."
                     }
                 );
-                context.SaveChanges();
+                }
+                
+                if (context.Roles.Any())
+                {
+                    // Roles already exist
+                }
+                else
+                {
+
+                    string[] roles = new string[] { "Admin", "Member" };
+
+                    ApplicationRole admin = new ApplicationRole
+                    {
+                        Name = "Admin",
+                        NormalizedName = "ADMIN",
+                        CreatedDate = DateTime.UtcNow,
+                        Description = "Site Administrator"
+                    };
+
+                    ApplicationRole member = new ApplicationRole
+                    {
+                        Name = "Member",
+                        NormalizedName = "MEMBER",
+                        CreatedDate = DateTime.UtcNow,
+                        Description = "Site Member"
+                    };
+                    var roleStore = new RoleStore<ApplicationRole>(context);
+                    roleStore.CreateAsync(admin);
+                    roleStore.CreateAsync(member);
+                }
+                if (context.Users.Any())
+                {
+                    // Users already exist
+                }
+                else
+                {
+                    ApplicationUser superadmin = new ApplicationUser
+                    {
+                        UserName = "admin1@gmail.com",
+                        Email = "admin1@gmail.com",
+                        NormalizedEmail = "ADMIN1@GMAIL.COM",
+                        NormalizedUserName = "ADMIN1@GMAIL.COM",
+                        FullName = "Admin",
+                        BirthDate = DateTime.UtcNow,
+                        Age = 0,
+                        EmailConfirmed = true
+                    };
+                    // PASSWORD SETTING?!?!??!?!?!?!
+                    var password = new PasswordHasher<ApplicationUser>();
+                    var hashed = password.HashPassword(superadmin, "Admin123"); // Admin123 is password
+                    superadmin.PasswordHash = hashed;
+
+
+                    UserManager<ApplicationUser> _userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
+                    var userStore = new UserStore<ApplicationUser>(context);
+                    var result = userStore.CreateAsync(superadmin);
+                    result.Wait();
+                    var result2 = _userManager.AddToRoleAsync(superadmin, "Admin");
+                    result2.Wait();
+                }
+
+
+                context.SaveChangesAsync();
             }
         }
     }

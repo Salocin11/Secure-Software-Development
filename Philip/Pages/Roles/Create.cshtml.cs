@@ -38,7 +38,6 @@ namespace Philip.Pages.Roles
             }
 
             ApplicationRole.CreatedDate = DateTime.UtcNow;
-            ApplicationRole.IPAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
             IdentityResult roleResult = await _roleManager.CreateAsync(ApplicationRole);
 
