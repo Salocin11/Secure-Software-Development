@@ -24,6 +24,7 @@ namespace Philip.Pages.Articles
         [BindProperty]
         public Article Article { get; set; }
         public string ConcurrencyErrorMessage { get; set; }
+        static string oldval { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int id, bool? concurrencyError)
         {
@@ -31,6 +32,10 @@ namespace Philip.Pages.Articles
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
 
+            oldval = "Title: " + Article.Title +
+                "\r\n --------Author :" + Article.Author +
+                "\r\n --------Release Date :" + Article.ReleaseDate +
+                "\r\n --------Content: " + Article.Content;
             if (Article == null)
             {
                 return NotFound();
@@ -61,16 +66,20 @@ namespace Philip.Pages.Articles
                         // Once a record is deleted, create an audit record
                         if (await _context.SaveChangesAsync() > 0)
                         {
+                            // Create an auditrecord object
                             var auditrecord = new AuditRecord();
                             auditrecord.AuditActionType = "Delete Post Record";
                             auditrecord.DateTimeStamp = DateTime.Now;
                             auditrecord.KeyPostFieldID = Article.ID;
+                            // Get current logged-in user
                             var userID = User.Identity.Name.ToString();
                             auditrecord.Username = userID;
+                            auditrecord.OldValue = oldval;
+                            auditrecord.NewValue = "";
                             _context.AuditRecords.Add(auditrecord);
-
+                            await _context.SaveChangesAsync();
                         }
-                        await _context.SaveChangesAsync();
+                        
                     }
                 }
                

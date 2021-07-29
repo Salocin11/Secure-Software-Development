@@ -24,17 +24,20 @@ namespace Philip.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly Philip.Data.PhilipContext _context;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            Philip.Data.PhilipContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
         [BindProperty]
@@ -82,6 +85,17 @@ namespace Philip.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
+                    // Create an auditrecord object //changes
+                    var auditrecord = new AuditRecord();
+                    auditrecord.AuditActionType = "Registration";
+                    auditrecord.DateTimeStamp = DateTime.Now;
+                    auditrecord.KeyPostFieldID = 996;
+                    // Get email of user registering 
+                    auditrecord.Username = Input.Email;
+
+                    _context.AuditRecords.Add(auditrecord);
+                    await _context.SaveChangesAsync();
+
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

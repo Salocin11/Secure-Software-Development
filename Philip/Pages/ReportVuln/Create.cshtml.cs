@@ -44,7 +44,25 @@ namespace Philip.Pages.ReportVuln
             }
             _notyf.Success("Submission was successful!");
             _context.Feedback.Add(Feedback);
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
+
+            // Once a record is added, create an audit record
+            if (await _context.SaveChangesAsync() > 0)
+            {
+                // Create an auditrecord object
+                var auditrecord = new AuditRecord();
+                auditrecord.AuditActionType = "Add Vulnerability Record";
+                auditrecord.DateTimeStamp = DateTime.Now;
+                auditrecord.KeyPostFieldID = Feedback.ID;
+                auditrecord.Username = Feedback.Email;
+                auditrecord.OldValue = "";
+                auditrecord.NewValue = "Title: " + Feedback.Title +
+                                       "\r\n --------Email :" + Feedback.Email +
+                                       "\r\n --------Content: " + Feedback.Content;
+
+                _context.AuditRecords.Add(auditrecord);
+                await _context.SaveChangesAsync();
+            }
 
             return RedirectToPage("/Privacy");
         }

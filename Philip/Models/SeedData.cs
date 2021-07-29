@@ -54,7 +54,9 @@ namespace Philip.Models
                         ReleaseDate = DateTime.Parse("2021-03-18"),
                         Content = "Hashing is the process of transforming any given key or a string of characters into another value. This is usually represented by a shorter, fixed-length value or key that represents and makes it easier to find or employ the original string."
                     }
+                 
                 );
+
                 context.SaveChanges();
             }
         }

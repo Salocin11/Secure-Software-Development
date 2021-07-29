@@ -14,13 +14,17 @@ namespace Philip.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly Philip.Data.PhilipContext _context;
+        static string oldval { get; set; }
 
         public IndexModel(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager,
+            Philip.Data.PhilipContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _context = context;
         }
 
         public string Username { get; set; }
@@ -78,6 +82,7 @@ namespace Philip.Areas.Identity.Pages.Account.Manage
             }
 
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            oldval = phoneNumber;
             if (Input.PhoneNumber != phoneNumber)
             {
                 var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
@@ -89,6 +94,24 @@ namespace Philip.Areas.Identity.Pages.Account.Manage
             }
 
             await _signInManager.RefreshSignInAsync(user);
+
+            // Create an auditrecord object
+            var auditrecord = new AuditRecord();
+            auditrecord.AuditActionType = "Update phone number";
+            auditrecord.DateTimeStamp = DateTime.Now;
+            auditrecord.KeyPostFieldID = 991;
+            // Get email of user logging in 
+            var userID = User.Identity.Name.ToString();
+            auditrecord.Username = userID;
+            auditrecord.OldValue = oldval;
+            auditrecord.NewValue = Input.PhoneNumber;
+
+            _context.AuditRecords.Add(auditrecord);
+            await _context.SaveChangesAsync();
+
+            StatusMessage = "Your email is unchanged.";
+            return RedirectToPage();
+
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
         }
