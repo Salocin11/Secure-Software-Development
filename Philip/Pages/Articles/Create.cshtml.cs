@@ -51,6 +51,11 @@ namespace Philip.Pages.Articles
                 // Get current logged-in user
                 var userID = User.Identity.Name.ToString();
                 auditrecord.Username = userID;
+                auditrecord.OldValue = "";
+                auditrecord.NewValue = "Title: " + Article.Title +
+                                       "\r\n --------Author :" + Article.Author +
+                                       "\r\n --------Release Date :" + Article.ReleaseDate +
+                                       "\r\n --------Content: " + Article.Content;
 
                 _context.AuditRecords.Add(auditrecord);
                 await _context.SaveChangesAsync();

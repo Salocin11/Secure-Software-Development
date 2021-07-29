@@ -27,6 +27,16 @@ namespace Philip.Models
         [Display(Name = "Post Record ID ")]
         public int KeyPostFieldID { get; set; }
         //Store the ID of post record that is affected
+
+
+        //trying stuff here
+        [Display(Name = "Old Value")]
+        public string OldValue { get; set; }
+        //Old Value of content
+
+        [Display(Name = "New Value")]
+        public string NewValue { get; set; }
+        //New value of content
     }
 
 }

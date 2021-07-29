@@ -19,15 +19,18 @@ namespace Philip.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
-
+        private readonly Philip.Data.PhilipContext _context;
+        static string oldval { get; set; }
         public EmailModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
+            Philip.Data.PhilipContext context,
             IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
+            _context = context;
         }
 
         public string Username { get; set; }
@@ -90,8 +93,10 @@ namespace Philip.Areas.Identity.Pages.Account.Manage
             }
 
             var email = await _userManager.GetEmailAsync(user);
+            oldval = email;
             if (Input.NewEmail != email)
             {
+                
                 var userId = await _userManager.GetUserIdAsync(user);
                 var code = await _userManager.GenerateChangeEmailTokenAsync(user, Input.NewEmail);
                 var callbackUrl = Url.Page(
@@ -107,6 +112,20 @@ namespace Philip.Areas.Identity.Pages.Account.Manage
                 StatusMessage = "Confirmation link to change email sent. Please check your email.";
                 return RedirectToPage();
             }
+
+            // Create an auditrecord object
+            var auditrecord = new AuditRecord();
+            auditrecord.AuditActionType = "Change Email";
+            auditrecord.DateTimeStamp = DateTime.Now;
+            auditrecord.KeyPostFieldID = 994;
+            // Get email of user logging in 
+            var userID = User.Identity.Name.ToString();
+            auditrecord.Username = userID;
+            auditrecord.OldValue = oldval;
+            auditrecord.NewValue = Input.NewEmail;
+
+            _context.AuditRecords.Add(auditrecord);
+            await _context.SaveChangesAsync();
 
             StatusMessage = "Your email is unchanged.";
             return RedirectToPage();

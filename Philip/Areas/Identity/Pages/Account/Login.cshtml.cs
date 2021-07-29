@@ -91,6 +91,17 @@ namespace Philip.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    // Create an auditrecord object
+                    var auditrecord = new AuditRecord();
+                    auditrecord.AuditActionType = "Login";
+                    auditrecord.DateTimeStamp = DateTime.Now;
+                    auditrecord.KeyPostFieldID = 997;
+                    // Get email of user logging in 
+                    auditrecord.Username = Input.Email;
+
+                    _context.AuditRecords.Add(auditrecord);
+                    await _context.SaveChangesAsync();
+
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }
@@ -101,10 +112,10 @@ namespace Philip.Areas.Identity.Pages.Account
                     auditrecord.AuditActionType = "Failed Login";
                     auditrecord.DateTimeStamp = DateTime.Now;
                     auditrecord.KeyPostFieldID = 999;
-                    // 999 – dummy record 
-
-                    auditrecord.Username = Input.Email;
                     // save the email used for the failed login
+                    auditrecord.Username = Input.Email;
+                    
+                    // add log to audit record
                     _context.AuditRecords.Add(auditrecord);
                     await _context.SaveChangesAsync();
                 }
