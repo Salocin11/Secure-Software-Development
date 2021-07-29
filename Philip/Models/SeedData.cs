@@ -121,7 +121,6 @@ namespace Philip.Models
                     await userManager.AddToRoleAsync(defaultUser, "Admin");
                     await userManager.AddToRoleAsync(defaultUser, "Member");
                 }
-
             }
         }
     }

@@ -16,11 +16,14 @@ namespace Philip.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LogoutModel> _logger;
-
-        public LogoutModel(SignInManager<ApplicationUser> signInManager, ILogger<LogoutModel> logger)
+        private readonly Philip.Data.PhilipContext _context;
+        public LogoutModel(SignInManager<ApplicationUser> signInManager, 
+            ILogger<LogoutModel> logger, 
+            Philip.Data.PhilipContext context)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _context = context;
         }
 
         public void OnGet()
@@ -30,6 +33,19 @@ namespace Philip.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPost(string returnUrl = null)
         {
             await _signInManager.SignOutAsync();
+            
+            // Create an auditrecord object
+            var auditrecord = new AuditRecord();
+            auditrecord.AuditActionType = "Log out";
+            auditrecord.DateTimeStamp = DateTime.Now;
+            auditrecord.KeyPostFieldID = 998;
+            // Get current logged-in user
+            var userID = User.Identity.Name.ToString();
+            auditrecord.Username = userID;
+            //add logs to audit record
+            _context.AuditRecords.Add(auditrecord);
+            await _context.SaveChangesAsync();
+            
             _logger.LogInformation("User logged out.");
             if (returnUrl != null)
             {

@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-
+using Microsoft.EntityFrameworkCore.Design;
 namespace Philip.Migrations
 {
     public partial class AddAudit : Migration
