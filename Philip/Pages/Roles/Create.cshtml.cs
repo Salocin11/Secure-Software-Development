@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Philip.Data;
 using Philip.Models;
 
 namespace Philip.Pages.Roles
 {
+    [Authorize(Roles = "Admin")]
     public class CreateModel : PageModel
     {
         private readonly RoleManager<ApplicationRole> _roleManager;
@@ -38,7 +40,6 @@ namespace Philip.Pages.Roles
             }
 
             ApplicationRole.CreatedDate = DateTime.UtcNow;
-            ApplicationRole.IPAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
             IdentityResult roleResult = await _roleManager.CreateAsync(ApplicationRole);
 

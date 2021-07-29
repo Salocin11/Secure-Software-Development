@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Authorization;
 using Philip.Models;
 namespace Philip.Pages.Roles
 {
+    [Authorize(Roles = "Admin")]
     public class EditModel : PageModel
     {
         private readonly RoleManager<ApplicationRole> _roleManager;

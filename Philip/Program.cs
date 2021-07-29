@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -9,7 +10,7 @@ namespace Philip
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public async static Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
 
@@ -19,7 +20,7 @@ namespace Philip
 
                 try
                 {
-                    SeedData.Initialize(services);
+                    await SeedData.Initialize(services);
                 }
                 catch (Exception ex)
                 {

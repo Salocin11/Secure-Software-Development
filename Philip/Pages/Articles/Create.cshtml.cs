@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 using Philip.Data;
 using Philip.Models;
 
 namespace Philip.Pages.Articles
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Member")]
     public class CreateModel : PageModel
     {
         private readonly Philip.Data.PhilipContext _context;

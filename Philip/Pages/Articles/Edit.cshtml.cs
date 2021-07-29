@@ -6,12 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using Philip.Data;
 using Philip.Models;
 
 namespace Philip.Pages.Articles
 {
-    //[Authorize(Roles = "Admin, Users")]
+    [Authorize(Roles = "Admin")]
     public class EditModel : PageModel
     {
         private readonly Philip.Data.PhilipContext _context;
@@ -19,6 +20,7 @@ namespace Philip.Pages.Articles
         public EditModel(Philip.Data.PhilipContext context)
         {
             _context = context;
+            //if (_context.AuditRecords.Find(i => i.Username == _context.AuditRecords.Find(i => i.)))
         }
 
         [BindProperty]
