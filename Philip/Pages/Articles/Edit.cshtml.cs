@@ -87,7 +87,7 @@ namespace Philip.Pages.Articles
                     if (await _context.SaveChangesAsync() > 0)
                     {
                         var auditrecord = new AuditRecord();
-                        auditrecord.AuditActionType = "Edit Post Record";
+                        auditrecord.AuditActionType = "Edit Article";
                         auditrecord.DateTimeStamp = DateTime.Now;
                         auditrecord.KeyPostFieldID = Article.ID;
                         var userID = User.Identity.Name.ToString();

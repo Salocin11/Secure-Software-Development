@@ -87,9 +87,9 @@ namespace Philip.Areas.Identity.Pages.Account
                 {
                     // Create an auditrecord object //changes
                     var auditrecord = new AuditRecord();
-                    auditrecord.AuditActionType = "Registration";
+                    auditrecord.AuditActionType = "Register";
                     auditrecord.DateTimeStamp = DateTime.Now;
-                    auditrecord.KeyPostFieldID = 996;
+                    auditrecord.KeyPostFieldID = 911;
                     // Get email of user registering 
                     auditrecord.Username = Input.Email;
 

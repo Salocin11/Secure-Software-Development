@@ -100,7 +100,7 @@ namespace Philip.Areas.Identity.Pages.Account.Manage
             var auditrecord = new AuditRecord();
             auditrecord.AuditActionType = "Change Password";
             auditrecord.DateTimeStamp = DateTime.Now;
-            auditrecord.KeyPostFieldID = 995;
+            auditrecord.KeyPostFieldID = 933;
             // Get email of user logging in 
             var userID = User.Identity.Name.ToString();
             auditrecord.Username = userID;

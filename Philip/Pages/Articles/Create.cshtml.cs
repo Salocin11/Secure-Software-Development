@@ -46,7 +46,7 @@ namespace Philip.Pages.Articles
             {
                 // Create an auditrecord object
                 var auditrecord = new AuditRecord();
-                auditrecord.AuditActionType = "Add Post Record";
+                auditrecord.AuditActionType = "Add Article";
                 auditrecord.DateTimeStamp = DateTime.Now;
                 auditrecord.KeyPostFieldID = Article.ID;
                 // Get current logged-in user

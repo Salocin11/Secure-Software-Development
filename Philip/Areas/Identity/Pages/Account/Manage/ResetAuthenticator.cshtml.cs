@@ -59,7 +59,7 @@ namespace Philip.Areas.Identity.Pages.Account.Manage
             var auditrecord = new AuditRecord();
             auditrecord.AuditActionType = "Reset 2FA";
             auditrecord.DateTimeStamp = DateTime.Now;
-            auditrecord.KeyPostFieldID = 983;
+            auditrecord.KeyPostFieldID = 937;
             // Get email of user logging in 
             var userID = User.Identity.Name.ToString();
             auditrecord.Username = userID;

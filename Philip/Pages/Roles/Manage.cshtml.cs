@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System;
+
 namespace Philip.Pages.Roles
 {
     [Authorize(Roles = "Admin")]
@@ -34,11 +36,14 @@ namespace Philip.Pages.Roles
         public string delusername { set; get; }
         public int usercountinrole { set; get; }
         public IList<ApplicationRole> Listroles { get; set; }
+        static string id { get; set; }
         public string ListUsersInRole(string rolename)
         {
+            
             // Method - return a string showing a list of users based on specified role as parameter
             string strListUsersInRole = "";
             string roleid = _roleManager.Roles.SingleOrDefault(u => u.Name == rolename).Id;
+            id = roleid;
             // Get no. of users for each specified role
             var count = _context.UserRoles.Where(u => u.RoleId == roleid).Count();
             usercountinrole = count;
@@ -76,6 +81,20 @@ namespace Philip.Pages.Roles
             IdentityResult roleResult = await _userManager.AddToRoleAsync(AppUser, AppRole.Name);
             if (roleResult.Succeeded)
             {
+                // Create an auditrecord object
+                var auditrecord = new AuditRecord();
+                auditrecord.AuditActionType = "Add User to Role";
+                auditrecord.DateTimeStamp = DateTime.Now;
+                auditrecord.KeyPostFieldID = 924;
+                // Get current logged-in user
+                var userID = User.Identity.Name.ToString();
+                auditrecord.Username = userID;
+                auditrecord.NewValue = "Selected User: " + selectedusername +
+                                       "\r\n --------Assigned Role: " + selectedrolename;
+
+                _context.AuditRecords.Add(auditrecord);
+                await _context.SaveChangesAsync();
+
                 TempData["message"] = "Role added to this user successfully";
                 return RedirectToPage("Manage");
             }
@@ -93,7 +112,23 @@ namespace Philip.Pages.Roles
             if (await _userManager.IsInRoleAsync(user, delrolename))
             {
                 await _userManager.RemoveFromRoleAsync(user, delrolename);
+
+                // Create an auditrecord object
+                var auditrecord = new AuditRecord();
+                auditrecord.AuditActionType = "Delete User from Role";
+                auditrecord.DateTimeStamp = DateTime.Now;
+                auditrecord.KeyPostFieldID = 925;
+                // Get current logged-in user
+                var userID = User.Identity.Name.ToString();
+                auditrecord.Username = userID;
+                auditrecord.NewValue = "Selected User: " + delusername +
+                                       "\r\n --------Removed Role: " + delrolename;
+
+                _context.AuditRecords.Add(auditrecord);
+                await _context.SaveChangesAsync();
+
                 TempData["message"] = "Role removed from this user successfully";
+
             }
             return RedirectToPage("Manage");
         }
