@@ -68,7 +68,7 @@ namespace Philip.Pages.Articles
                         {
                             // Create an auditrecord object
                             var auditrecord = new AuditRecord();
-                            auditrecord.AuditActionType = "Delete Post Record";
+                            auditrecord.AuditActionType = "Delete Article";
                             auditrecord.DateTimeStamp = DateTime.Now;
                             auditrecord.KeyPostFieldID = Article.ID;
                             // Get current logged-in user

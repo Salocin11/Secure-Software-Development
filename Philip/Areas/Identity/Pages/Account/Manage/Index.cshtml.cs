@@ -97,9 +97,9 @@ namespace Philip.Areas.Identity.Pages.Account.Manage
 
             // Create an auditrecord object
             var auditrecord = new AuditRecord();
-            auditrecord.AuditActionType = "Update phone number";
+            auditrecord.AuditActionType = "Add/Update Phone Number";
             auditrecord.DateTimeStamp = DateTime.Now;
-            auditrecord.KeyPostFieldID = 991;
+            auditrecord.KeyPostFieldID = 931;
             // Get email of user logging in 
             var userID = User.Identity.Name.ToString();
             auditrecord.Username = userID;

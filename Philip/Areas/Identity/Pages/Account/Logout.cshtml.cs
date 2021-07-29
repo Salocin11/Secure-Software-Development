@@ -36,9 +36,9 @@ namespace Philip.Areas.Identity.Pages.Account
             
             // Create an auditrecord object
             var auditrecord = new AuditRecord();
-            auditrecord.AuditActionType = "Log out";
+            auditrecord.AuditActionType = "Logout";
             auditrecord.DateTimeStamp = DateTime.Now;
-            auditrecord.KeyPostFieldID = 998;
+            auditrecord.KeyPostFieldID = 913;
             // Get current logged-in user
             var userID = User.Identity.Name.ToString();
             auditrecord.Username = userID;

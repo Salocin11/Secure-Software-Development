@@ -73,9 +73,9 @@ namespace Philip.Areas.Identity.Pages.Account.Manage
 
             // Create an auditrecord object
             var auditrecord = new AuditRecord();
-            auditrecord.AuditActionType = "Reset/Genenrate 2FA Recovery codes";
+            auditrecord.AuditActionType = "Reset/Genenrate 2FA Recovery Codes";
             auditrecord.DateTimeStamp = DateTime.Now;
-            auditrecord.KeyPostFieldID = 982;
+            auditrecord.KeyPostFieldID = 936;
             // Get email of user logging in 
             var userID = User.Identity.Name.ToString();
             auditrecord.Username = userID;

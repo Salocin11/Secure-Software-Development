@@ -51,7 +51,7 @@ namespace Philip.Pages.ReportVuln
             {
                 // Create an auditrecord object
                 var auditrecord = new AuditRecord();
-                auditrecord.AuditActionType = "Add Vulnerability Record";
+                auditrecord.AuditActionType = "Add Vulnerability Feedback";
                 auditrecord.DateTimeStamp = DateTime.Now;
                 auditrecord.KeyPostFieldID = Feedback.ID;
                 auditrecord.Username = Feedback.Email;
