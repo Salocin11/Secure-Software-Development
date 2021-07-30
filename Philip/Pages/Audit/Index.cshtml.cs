@@ -37,6 +37,18 @@ namespace Philip.Pages.Audit
                 audits = audits.Where(s => s.AuditActionType.Contains(SearchString));
             }
             AuditRecord = await _context.AuditRecords.ToListAsync();
+
+            // Create an auditrecord object
+            var auditrecord = new AuditRecord();
+            auditrecord.AuditActionType = "View Audit Logs";
+            auditrecord.DateTimeStamp = DateTime.Now;
+            auditrecord.KeyPostFieldID = 999;
+            // Get email of user logging in 
+            var userID = User.Identity.Name.ToString();
+            auditrecord.Username = userID;
+
+            _context.AuditRecords.Add(auditrecord);
+            await _context.SaveChangesAsync();
         }
     }
    
