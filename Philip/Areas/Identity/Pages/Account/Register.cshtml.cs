@@ -85,6 +85,7 @@ namespace Philip.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user, "Member");
                     // Create an auditrecord object //changes
                     var auditrecord = new AuditRecord();
                     auditrecord.AuditActionType = "Register";
