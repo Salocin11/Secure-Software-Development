@@ -164,7 +164,7 @@ namespace Philip.Areas.Identity.Pages.Account.Manage
         {
             return string.Format(
                 AuthenticatorUriFormat,
-                _urlEncoder.Encode("Philip"),
+                _urlEncoder.Encode("BrainWiki"),
                 _urlEncoder.Encode(email),
                 unformattedKey);
         }
