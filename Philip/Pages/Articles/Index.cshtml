@@ -7,10 +7,6 @@
 
 <h1>Articles</h1>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
-
 <form>
     <p>
         Title: <input type="text" asp-for="SearchString" />
@@ -18,51 +14,45 @@
     </p>
 </form>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Article[0].Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Article[0].Author)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Article[0].ReleaseDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Article[0].Content)
-            </th>
-            <th>
-               RowVersion
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
+<div class="container-fluid" style="background-color: white; border: 1px solid #e2e4e5; border-radius: 10px; margin-bottom: 10px;">
+    <div class="row">
+
+    </div>
+</div>
+
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+
 @foreach (var item in Model.Article) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Author)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReleaseDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Content)
-            </td>
-            <td>
-                @item.RowVersion[7]
-            </td>
-            <td>
+    <div class="container-fluid" style="background-color: white; border: 1px solid #e2e4e5; border-radius: 5px; margin-bottom: 10px;">
+        <div class="row"    >
+            <div class="col-sm-3">
+                <div class="row" style="padding-left: 20px; padding-top: 20px;">
+                    <b>@Html.DisplayFor(modelItem => item.Author)</b>
+                </div>
+                <div class="row" style="margin-top: 10px; padding-left: 20px;">
+                    @Html.DisplayFor(modelItem => item.ReleaseDate)
+                </div>
+            </div>
+            <div class="col-sm-7"></div>
+            <div class="col-sm-2" style="padding-right: 20px; padding-top: 20px;">
                 <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
                 <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
                 <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
+            </div>
+        </div>
+        <div class="row text-wrap" style="font-size: 18px; padding-top: 10px; padding-left: 20px; padding-right: 20px;">
+            <div class="col-sm-12">
+                <b>@Html.DisplayFor(modelItem => item.Title)</b>
+            </div>
+        </div>
+        <div class="row text-wrap" style="padding-bottom: 20px; font-size: 18px; margin-bottom: 10px; padding-left: 20px; padding-right: 20px;">
+            <div class="col-sm-12">
+                @Html.DisplayFor(modelItem => item.Content)
+            </div>
+        </div>
+    </div>
 }
-    </tbody>
-</table>
+

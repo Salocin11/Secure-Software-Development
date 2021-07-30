@@ -55,7 +55,7 @@ namespace Philip.Pages.ReportVuln
                 {
                     // Create an auditrecord object
                     var auditrecord = new AuditRecord();
-                    auditrecord.AuditActionType = "Delete Vulnerability Record";
+                    auditrecord.AuditActionType = "Delete Vulnerability FeedBack";
                     auditrecord.DateTimeStamp = DateTime.Now;
                     auditrecord.KeyPostFieldID = Feedback.ID;
                     // Get current logged-in user

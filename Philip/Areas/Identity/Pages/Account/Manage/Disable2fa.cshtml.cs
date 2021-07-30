@@ -63,7 +63,7 @@ namespace Philip.Areas.Identity.Pages.Account.Manage
             var auditrecord = new AuditRecord();
             auditrecord.AuditActionType = "Disable 2FA";
             auditrecord.DateTimeStamp = DateTime.Now;
-            auditrecord.KeyPostFieldID = 988;
+            auditrecord.KeyPostFieldID = 935;
             // Get email of user logging in 
             var userID = User.Identity.Name.ToString();
             auditrecord.Username = userID;

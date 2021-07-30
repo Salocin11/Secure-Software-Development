@@ -59,7 +59,7 @@ namespace Philip.Areas.Identity.Pages.Account.Manage
             var auditrecord = new AuditRecord();
             auditrecord.AuditActionType = "Download Personal Data";
             auditrecord.DateTimeStamp = DateTime.Now;
-            auditrecord.KeyPostFieldID = 992;
+            auditrecord.KeyPostFieldID = 938;
             // Get email of user logging in 
             var userID = User.Identity.Name.ToString();
             auditrecord.Username = userID;

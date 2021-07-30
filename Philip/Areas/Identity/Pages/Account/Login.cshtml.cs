@@ -24,11 +24,6 @@ namespace Philip.Areas.Identity.Pages.Account
         private readonly ILogger<LoginModel> _logger;
         private readonly Philip.Data.PhilipContext _context;
 
-        //default code
-        //public LoginModel(SignInManager<ApplicationUser> signInManager, 
-        //ILogger<LoginModel> logger,
-        //UserManager<ApplicationUser> userManager)
-
         public LoginModel(SignInManager<ApplicationUser> signInManager, 
             ILogger<LoginModel> logger,
             Philip.Data.PhilipContext context,
@@ -96,7 +91,7 @@ namespace Philip.Areas.Identity.Pages.Account
                     var auditrecord = new AuditRecord();
                     auditrecord.AuditActionType = "Login";
                     auditrecord.DateTimeStamp = DateTime.Now;
-                    auditrecord.KeyPostFieldID = 997;
+                    auditrecord.KeyPostFieldID = 912;
                     // Get email of user logging in 
                     auditrecord.Username = Input.Email;
 
@@ -112,7 +107,7 @@ namespace Philip.Areas.Identity.Pages.Account
                     var auditrecord = new AuditRecord();
                     auditrecord.AuditActionType = "Failed Login";
                     auditrecord.DateTimeStamp = DateTime.Now;
-                    auditrecord.KeyPostFieldID = 999;
+                    auditrecord.KeyPostFieldID = 914;
                     // save the email used for the failed login
                     auditrecord.Username = Input.Email;
                     
