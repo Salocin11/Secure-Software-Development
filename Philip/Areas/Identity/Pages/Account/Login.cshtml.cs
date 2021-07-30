@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Philip.Models;
+using Philip.Authorization;
 
 namespace Philip.Areas.Identity.Pages.Account
 {

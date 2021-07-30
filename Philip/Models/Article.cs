@@ -11,6 +11,9 @@ namespace Philip.Models
     {
         public int ID { get; set; }
 
+        [StringLength(450, MinimumLength = 1)]
+        public string UserID { get; set; }
+
         [StringLength(60, MinimumLength = 3)]
         [Required]
         public string Title { get; set; }
@@ -25,5 +28,6 @@ namespace Philip.Models
         public string Content { get; set; } // Database should be using the Blob data type
         [Timestamp]
         public byte[] RowVersion { get; set; }
+
     }
 }

@@ -109,9 +109,6 @@ namespace Philip.Areas.Identity.Pages.Account.Manage
             _context.AuditRecords.Add(auditrecord);
             await _context.SaveChangesAsync();
 
-            StatusMessage = "Your email is unchanged.";
-            return RedirectToPage();
-
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
         }

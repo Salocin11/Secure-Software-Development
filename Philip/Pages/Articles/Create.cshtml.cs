@@ -27,7 +27,7 @@ namespace Philip.Pages.Articles
         }
 
         [BindProperty]
-        public Article Article { get; set; }
+        public Article article { get; set; }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://aka.ms/RazorPagesCRUD.
@@ -37,8 +37,9 @@ namespace Philip.Pages.Articles
             {
                 return Page();
             }
-
-            _context.Article.Add(Article);
+            var userID = User.Identity.Name.ToString();
+            article.UserID = userID;
+            _context.Article.Add(article);
             //await _context.SaveChangesAsync();
 
             // Once a record is added, create an audit record
@@ -48,15 +49,14 @@ namespace Philip.Pages.Articles
                 var auditrecord = new AuditRecord();
                 auditrecord.AuditActionType = "Add Post Record";
                 auditrecord.DateTimeStamp = DateTime.Now;
-                auditrecord.KeyPostFieldID = Article.ID;
+                auditrecord.KeyPostFieldID = article.ID;
                 // Get current logged-in user
-                var userID = User.Identity.Name.ToString();
                 auditrecord.Username = userID;
                 auditrecord.OldValue = "";
-                auditrecord.NewValue = "Title: " + Article.Title +
-                                       "\r\n --------Author :" + Article.Author +
-                                       "\r\n --------Release Date :" + Article.ReleaseDate +
-                                       "\r\n --------Content: " + Article.Content;
+                auditrecord.NewValue = "Title: " + article.Title +
+                                       "\r\n --------Author :" + article.Author +
+                                       "\r\n --------Release Date :" + article.ReleaseDate +
+                                       "\r\n --------Content: " + article.Content;
 
                 _context.AuditRecords.Add(auditrecord);
                 await _context.SaveChangesAsync();

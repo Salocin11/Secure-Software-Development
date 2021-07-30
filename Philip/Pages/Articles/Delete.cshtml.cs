@@ -5,13 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Philip.Data;
 using Philip.Models;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Philip.Pages.Articles
 {
-    //[Authorize(Roles = "Admin, User")]
+    [Authorize(Roles = "Admin")]
     public class DeleteModel : PageModel
     {
         private readonly Philip.Data.PhilipContext _context;
