@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Philip.Pages.Audit
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class IndexModel : PageModel
     {
         private readonly Philip.Data.PhilipContext _context;
