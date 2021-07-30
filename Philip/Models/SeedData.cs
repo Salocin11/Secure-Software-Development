@@ -52,15 +52,75 @@ namespace Philip.Models
                     Content = "Command injection is a cyber attack that involves executing arbitrary commands on a host operating system (OS). Typically, the threat actor injects the commands by exploiting an application vulnerability, such as insufficient input validation."
                 },
 
-                    new Article
-                    {
-                        Title = "Hashing",
-                        Author = "Nicholas Chng",
-                        ReleaseDate = DateTime.Parse("2021-03-18"),
-                        Content = "Hashing is the process of transforming any given key or a string of characters into another value. This is usually represented by a shorter, fixed-length value or key that represents and makes it easier to find or employ the original string."
-                    }
-                );
-                context.SaveChanges();
+                new Article
+                {
+                    Title = "Hashing",
+                    Author = "Nicholas Chng",
+                    ReleaseDate = DateTime.Parse("2021-03-18"),
+                    Content = "Hashing is the process of transforming any given key or a string of characters into another value. This is usually represented by a shorter, fixed-length value or key that represents and makes it easier to find or employ the original string."
+                }
+            );
+            }
+
+            if (!context.Roles.Any())
+            {
+                await SeedRolesAsync(userManager, roleManager);
+                // Roles dont exist
+            }
+            if (!context.Users.Any())
+            {
+                await SeedSuperAdminAsync(userManager, roleManager);
+                // Users dont exist
+            }
+            context.SaveChanges();
+        }
+
+
+        public static async Task SeedRolesAsync(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
+        {
+            //Seed Roles
+            ApplicationRole admin = new ApplicationRole
+            {
+                Name = "Admin",
+                NormalizedName = "ADMIN",
+                CreatedDate = DateTime.UtcNow,
+                Description = "Site Administrator"
+            };
+
+            ApplicationRole member = new ApplicationRole
+            {
+                Name = "Member",
+                NormalizedName = "MEMBER",
+                CreatedDate = DateTime.UtcNow,
+                Description = "Site Member"
+            };
+
+            await roleManager.CreateAsync(admin);
+            await roleManager.CreateAsync(member);
+        }
+
+        public static async Task SeedSuperAdminAsync(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
+        {
+            //Seed Default User
+            var defaultUser = new ApplicationUser
+            {
+                UserName = "superadmin@gmail.com",
+                Email = "superadmin@gmail.com",
+                FullName = "Mukesh Murugan",
+                EmailConfirmed = true,
+                BirthDate = DateTime.UtcNow,
+                Age = 0,
+                PhoneNumberConfirmed = true
+            };
+            if (userManager.Users.All(u => u.Id != defaultUser.Id))
+            {
+                var user = await userManager.FindByEmailAsync(defaultUser.Email);
+                if (user == null)
+                {
+                    await userManager.CreateAsync(defaultUser, "Admin123");
+                    await userManager.AddToRoleAsync(defaultUser, "Admin");
+                    await userManager.AddToRoleAsync(defaultUser, "Member");
+                }
             }
         }
     }
