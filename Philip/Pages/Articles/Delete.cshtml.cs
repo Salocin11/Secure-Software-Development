@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Philip.Pages.Articles
 {
-    //[Authorize(Roles = "Admin, User")]
+    [Authorize(Roles = "Admin, User")]
     public class DeleteModel : PageModel
     {
         private readonly Philip.Data.PhilipContext _context;

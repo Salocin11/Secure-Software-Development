@@ -11,7 +11,6 @@ using Philip.Models;
 
 namespace Philip.Pages.Articles
 {
-    //[Authorize(Roles = "Admin, Users")]
     public class IndexModel : PageModel
     {
         private readonly Philip.Data.PhilipContext _context;
