@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Philip.Data;
 using Philip.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Philip.Pages.Audit
 {
+    //[Authorize(Roles = "Admin")]
     public class EditModel : PageModel
     {
         private readonly Philip.Data.PhilipContext _context;

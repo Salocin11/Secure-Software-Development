@@ -13,11 +13,15 @@ using Philip.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Philip.Models;
+using AspNetCoreHero.ToastNotification;
+using AspNetCoreHero.ToastNotification.Extensions;
+
 
 namespace Philip
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -28,11 +32,12 @@ namespace Philip
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
 
+            services.AddRazorPages();
+            services.AddTransient<PhilipContext>();
             services.AddDbContext<PhilipContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("PhilipContext")));
-            services.AddIdentity<ApplicationUser, Microsoft.AspNetCore.Identity.IdentityRole>()
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
        .AddDefaultUI()
         .AddEntityFrameworkStores<PhilipContext>()
         .AddDefaultTokenProviders();
@@ -44,6 +49,13 @@ namespace Philip
                 //  options.Conventions.AuthorizeAreaPage("Identity", "/Manage/Accounts");
                 options.Conventions.AuthorizeFolder("/Article");
             });
+            /*
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("EditDelPolicy", policy =>
+                    policy.Requirements.Add(new MinimumAgeRequirement(21)));
+            });
+            */
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings
@@ -62,7 +74,7 @@ namespace Philip
                 // User settings
                 options.User.RequireUniqueEmail = true;
             });
-
+            services.AddNotyf(config => { config.DurationInSeconds = 10; config.IsDismissable = true; config.Position = NotyfPosition.TopRight; });
 
 
         }
@@ -87,6 +99,7 @@ namespace Philip
             app.UseStaticFiles();
             app.UseAuthentication();
 
+
             app.UseRouting();
 
             app.UseAuthorization();
@@ -95,6 +108,10 @@ namespace Philip
             {
                 endpoints.MapRazorPages();
             });
+            app.UseNotyf();
+
+
+
         }
     }
 }

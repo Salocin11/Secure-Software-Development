@@ -10,6 +10,12 @@
 <p>
     <a asp-page="Create">Create New</a>
 </p>
+<form>
+    <p>
+        Audit Action: <input type="text" asp-for="SearchString" />
+        <input type="submit" value="Filter" />
+    </p>
+</form>
 <table class="table">
     <thead>
         <tr>
@@ -25,6 +31,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.AuditRecord[0].KeyPostFieldID)
             </th>
+            @*<th>
+                @Html.DisplayNameFor(model => model.AuditRecord[0].OldValue)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AuditRecord[0].NewValue)
+            </th>*@
             <th></th>
         </tr>
     </thead>
@@ -43,6 +55,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.KeyPostFieldID)
             </td>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.OldValue)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NewValue)
+            </td>*@
             <td>
                 <a asp-page="./Edit" asp-route-id="@item.Audit_ID">Edit</a> |
                 <a asp-page="./Details" asp-route-id="@item.Audit_ID">Details</a> |

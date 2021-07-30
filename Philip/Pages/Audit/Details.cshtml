@@ -35,6 +35,19 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.AuditRecord.KeyPostFieldID)
         </dd>
+        @*changes*@
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AuditRecord.OldValue)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AuditRecord.OldValue)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AuditRecord.NewValue)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AuditRecord.NewValue)
+        </dd>
     </dl>
 </div>
 <div>

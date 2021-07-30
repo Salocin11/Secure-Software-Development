@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{id:int}"
 @model Philip.Pages.Articles.EditModel
 
 @{
@@ -14,6 +14,11 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Article.ID" />
+            <input type="hidden" asp-for="Article.RowVersion" />
+            <div class="form-group">
+                <label>RowVersion</label>
+                @Model.Article.RowVersion[7]
+            </div>
             <div class="form-group">
                 <label asp-for="Article.Title" class="control-label"></label>
                 <input asp-for="Article.Title" class="form-control" />

@@ -16,13 +16,16 @@ namespace Philip.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<DownloadPersonalDataModel> _logger;
+        private readonly Philip.Data.PhilipContext _context;
 
         public DownloadPersonalDataModel(
             UserManager<ApplicationUser> userManager,
-            ILogger<DownloadPersonalDataModel> logger)
+            ILogger<DownloadPersonalDataModel> logger,
+            Philip.Data.PhilipContext context)
         {
             _userManager = userManager;
             _logger = logger;
+            _context = context;
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -51,6 +54,19 @@ namespace Philip.Areas.Identity.Pages.Account.Manage
             }
 
             Response.Headers.Add("Content-Disposition", "attachment; filename=PersonalData.json");
+
+            // Create an auditrecord object
+            var auditrecord = new AuditRecord();
+            auditrecord.AuditActionType = "Download Personal Data";
+            auditrecord.DateTimeStamp = DateTime.Now;
+            auditrecord.KeyPostFieldID = 938;
+            // Get email of user logging in 
+            var userID = User.Identity.Name.ToString();
+            auditrecord.Username = userID;
+
+            _context.AuditRecords.Add(auditrecord);
+            await _context.SaveChangesAsync();
+
             return new FileContentResult(JsonSerializer.SerializeToUtf8Bytes(personalData), "application/json");
         }
     }

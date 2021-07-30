@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Philip.Data;
 using Philip.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Philip.Pages.Audit
 {
+    //[Authorize(Roles = "Admin")]
     public class CreateModel : PageModel
     {
         private readonly Philip.Data.PhilipContext _context;

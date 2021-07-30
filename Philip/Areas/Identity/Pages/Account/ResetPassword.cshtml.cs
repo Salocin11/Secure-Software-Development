@@ -17,10 +17,13 @@ namespace Philip.Areas.Identity.Pages.Account
     public class ResetPasswordModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly Philip.Data.PhilipContext _context;
 
-        public ResetPasswordModel(UserManager<ApplicationUser> userManager)
+        public ResetPasswordModel(UserManager<ApplicationUser> userManager,
+            Philip.Data.PhilipContext context)
         {
             _userManager = userManager;
+            _context = context;
         }
 
         [BindProperty]
@@ -78,6 +81,16 @@ namespace Philip.Areas.Identity.Pages.Account
             var result = await _userManager.ResetPasswordAsync(user, Input.Code, Input.Password);
             if (result.Succeeded)
             {
+                // Create an auditrecord object
+                var auditrecord = new AuditRecord();
+                auditrecord.AuditActionType = "Reset Password";
+                auditrecord.DateTimeStamp = DateTime.Now;
+                auditrecord.KeyPostFieldID = 915;
+                // Get current user's email
+                auditrecord.Username = Input.Email;
+
+                _context.AuditRecords.Add(auditrecord);
+                await _context.SaveChangesAsync();
                 return RedirectToPage("./ResetPasswordConfirmation");
             }
 
