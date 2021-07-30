@@ -4,40 +4,45 @@
 @{
     ViewData["Title"] = "Articles";
 }
-
-<h1>Articles</h1>
-
 <form>
     <p>
-        Title: <input type="text" asp-for="SearchString" />
-        <input type="submit" value="Filter" />
+        <input type="text" asp-for="SearchString" placeholder="Search BrainWiki"/> 
+        <input type="submit" value="Search"/>
     </p>
 </form>
-
-<div class="container-fluid" style="background-color: white; border: 1px solid #e2e4e5; border-radius: 10px; margin-bottom: 10px;">
-    <div class="row">
-
+<style>
+    #create:hover {
+        text-decoration: none;
+    }
+</style>
+<a asp-page="Create" id="create">
+    <div class="container-fluid" style="background-color: white; border: 1px solid #e2e4e5; border-radius: 5px; margin-bottom: 10px; padding-left: 35px;">
+        <div class="row">
+            <div class="col-sm-12" style="font-size: 24px; color: #9b9698; padding-top: 20px; padding-bottom: 20px;">
+                <b>Start typing an article...</b>
+            </div>
+        </div>
     </div>
-</div>
-
-
+</a>
+<!--
 <p>
     <a asp-page="Create">Create New</a>
-</p>
+</p>-->
 
-@foreach (var item in Model.Article) {
+@foreach (var item in Model.Article)
+{
     <div class="container-fluid" style="background-color: white; border: 1px solid #e2e4e5; border-radius: 5px; margin-bottom: 10px;">
-        <div class="row"    >
+        <div class="row">
             <div class="col-sm-3">
-                <div class="row" style="padding-left: 20px; padding-top: 20px;">
+                <div class="row" style="padding-left: 35px; padding-top: 20px;">
                     <b>@Html.DisplayFor(modelItem => item.Author)</b>
                 </div>
-                <div class="row" style="margin-top: 10px; padding-left: 20px;">
+                <div class="row" style="margin-top: 10px; padding-left: 35px;">
                     @Html.DisplayFor(modelItem => item.ReleaseDate)
                 </div>
             </div>
             <div class="col-sm-7"></div>
-            <div class="col-sm-2" style="padding-right: 20px; padding-top: 20px;">
+            <div class="col-sm-2" style="padding-right: 35px; padding-top: 20px;">
                 <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
                 <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
                 <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
