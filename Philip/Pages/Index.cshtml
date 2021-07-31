@@ -1,48 +1,91 @@
 ﻿@page
 @model IndexModel
+
 @{
     ViewData["Title"] = "Home page";
 }
+<!--
 <h2>Today's Featured Article:</h2>
 <div class="container-fluid" style="background-color: white; border: 1px solid #e2e4e5; border-radius: 5px; margin-bottom: 10px;">
     <div class="row">
         <div class="col-sm-3">
-            <div class="row" style="padding-left: 35px; padding-top: 20px;">
-                <b>placeholder</b>
+            <div class="row" style="padding-left: 35px; padding-top: 20px;" id="author">
+                <b>Article Author</b>
             </div>
-            <div class="row" style="margin-top: 10px; padding-left: 35px;">
-                0/0/0
+            <div class="row" style="margin-top: 10px; padding-left: 35px;" id="publishDate">
+                Date of Publish
             </div>
         </div>
         <div class="col-sm-9"></div>
     </div>
-    <div class="row text-wrap" style="font-size: 18px; padding-top: 10px; padding-left: 20px; padding-right: 20px;">
+    <div class="row text-wrap" style="font-size: 18px; padding-top: 10px; padding-left: 20px; padding-right: 20px;" id="title">
         <div class="col-sm-12">
-            <b>placeholder</b>
+            <b>Article Title</b>
         </div>
     </div>
-    <div class="row text-wrap" style="padding-bottom: 20px; font-size: 18px; margin-bottom: 10px; padding-left: 20px; padding-right: 20px;">
+    <div class="row text-wrap" style="padding-bottom: 20px; font-size: 18px; margin-bottom: 10px; padding-left: 20px; padding-right: 20px;" id="content">
         <div class="col-sm-12">
-            placeholder
+            Article Content
         </div>
     </div>
 </div>
-
+-->
 <div class="container-fluid">
-    <div class="row" style="background-color: white;">
-        <div class="col-sm-12">
+    <div class="welcome">
+        <div class="row" style="background-color: white; border-radius: 5px; margin-bottom: 10px;">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10 text-center text-wrap">
+                <h3 style="padding-top: 20px; padding-left: 20px;">
+                    Welcome to BrainWiki!
+                </h3>
+                <p style="padding-bottom: 20px; font-size:18px; padding-left:20px; padding-right:20px;">
+                    Feel free to browse our collection of cybersecurity articles.
+                    You can sign up for an account or log in to an existing one to start writing your own, too!
+                    Have fun and happy learning!
+                </p>
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+    </div>
+    <div class="row" style="background-color: white; border-radius:5px; margin-bottom: 10px;">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10 text-center text-wrap">
             <h3 style="padding-top: 20px; padding-left: 20px;">
                 About BrainWiki
             </h3>
             <p style="padding-bottom: 20px; font-size:18px; padding-left:20px; padding-right:20px;">
-                <br />We aim to provide a platform that will allow everyone and anyone, regardless of your proficiency,
-                to learn and share about cybersecurity related topics.
+                BrainWiki is a platform for people interested in cybersecurity to learn and share their knowledge with others.
+                Whether you're an expert with years of experience, or have just started learning about the world of cybersecurity,
+                you can be sure to find something useful on BrainWiki.
             </p>
-            @*<p style="font-size:1vw; font-style:italic;">Create an account with us! or just feel free to browse around :) </p>*@
         </div>
+        <div class="col-sm-1"></div>
+    </div>
+    <div class="row" style="background-color: white; border-radius:5px; margin-bottom: 10px;">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10 text-center text-wrap">
+            <h3 style="padding-top: 20px; padding-left: 20px;">
+                Creators
+            </h3>
+            <p style="padding-bottom: 20px; font-size:18px; padding-left:20px; padding-right:20px;">
+                BrainWiki is created as part of a group assignment under the Secure Software Development module in Ngee Ann Polytechnic.
+                The students involved are:<br />
+                Nicholas Ian Boey S10203273<br />
+                Nicolas Teo Zhi Yong S10206093<br />
+                Nicholas Chng Li Kien S10204620<br />
+                Low Tze Han Dexter S10203375<br />
+            </p>
+        </div>
+        <div class="col-sm-1"></div>
     </div>
 
 </div>
-<footer>
 
-</footer>
+<!--
+<script>
+    document.getElementById("author").innerHTML = "testing";
+    document.getElementById("publishDate").innerHTML = "testing";
+    document.getElementById("title").innerHTML = "testing";
+    document.getElementById("content").innerHTML = "testing";
+</script>
+-->
