@@ -121,7 +121,7 @@ namespace Philip.Pages.Roles
                 // Get current logged-in user
                 var userID = User.Identity.Name.ToString();
                 auditrecord.Username = userID;
-                auditrecord.NewValue = "Selected User: " + delusername +
+                auditrecord.OldValue = "Selected User: " + delusername +
                                        "\r\n --------Removed Role: " + delrolename;
 
                 _context.AuditRecords.Add(auditrecord);

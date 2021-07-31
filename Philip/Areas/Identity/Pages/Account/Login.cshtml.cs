@@ -100,6 +100,26 @@ namespace Philip.Areas.Identity.Pages.Account
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }
+                if (result.RequiresTwoFactor)
+                {
+                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe, Email = Input.Email });
+                }
+                if (result.IsLockedOut)
+                {
+                    // Create an auditrecord object
+                    var auditrecord = new AuditRecord();
+                    auditrecord.AuditActionType = "Attempted Login but Locked Out";
+                    auditrecord.DateTimeStamp = DateTime.Now;
+                    auditrecord.KeyPostFieldID = 916;
+                    // Get email of user logging in 
+                    auditrecord.Username = Input.Email;
+
+                    _context.AuditRecords.Add(auditrecord);
+                    await _context.SaveChangesAsync();
+
+                    _logger.LogWarning("User account locked out.");
+                    return RedirectToPage("./Lockout");
+                }
                 else
                 {
                     // Login failed attempt - create an audit record
@@ -109,23 +129,11 @@ namespace Philip.Areas.Identity.Pages.Account
                     auditrecord.KeyPostFieldID = 914;
                     // save the email used for the failed login
                     auditrecord.Username = Input.Email;
-                    
+
                     // add log to audit record
                     _context.AuditRecords.Add(auditrecord);
                     await _context.SaveChangesAsync();
-                }
 
-                if (result.RequiresTwoFactor)
-                {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
-                }
-                if (result.IsLockedOut)
-                {
-                    _logger.LogWarning("User account locked out.");
-                    return RedirectToPage("./Lockout");
-                }
-                else
-                {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                     return Page();
                 }

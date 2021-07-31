@@ -17,11 +17,15 @@ namespace Philip.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginWith2faModel> _logger;
+        private readonly Philip.Data.PhilipContext _context;
 
-        public LoginWith2faModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginWith2faModel> logger)
+        public LoginWith2faModel(SignInManager<ApplicationUser> signInManager, 
+            ILogger<LoginWith2faModel> logger,
+            Philip.Data.PhilipContext context)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _context = context;
         }
 
         [BindProperty]
@@ -30,6 +34,8 @@ namespace Philip.Areas.Identity.Pages.Account
         public bool RememberMe { get; set; }
 
         public string ReturnUrl { get; set; }
+
+        public string Email { get; set; }
 
         public class InputModel
         {
@@ -43,7 +49,7 @@ namespace Philip.Areas.Identity.Pages.Account
             public bool RememberMachine { get; set; }
         }
 
-        public async Task<IActionResult> OnGetAsync(bool rememberMe, string returnUrl = null)
+        public async Task<IActionResult> OnGetAsync(bool rememberMe, string email, string returnUrl = null)
         {
             // Ensure the user has gone through the username & password screen first
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
@@ -55,6 +61,7 @@ namespace Philip.Areas.Identity.Pages.Account
 
             ReturnUrl = returnUrl;
             RememberMe = rememberMe;
+            Email = email;
 
             return Page();
         }
@@ -80,16 +87,49 @@ namespace Philip.Areas.Identity.Pages.Account
 
             if (result.Succeeded)
             {
+                // Create an auditrecord object
+                var auditrecord = new AuditRecord();
+                auditrecord.AuditActionType = "2FA Login";
+                auditrecord.DateTimeStamp = DateTime.Now;
+                auditrecord.KeyPostFieldID = 917;
+                // Get email of user logging in 
+                auditrecord.Username = Email;
+
+                _context.AuditRecords.Add(auditrecord);
+                await _context.SaveChangesAsync();
+
                 _logger.LogInformation("User with ID '{UserId}' logged in with 2fa.", user.Id);
                 return LocalRedirect(returnUrl);
             }
             else if (result.IsLockedOut)
             {
+                // Create an auditrecord object
+                var auditrecord = new AuditRecord();
+                auditrecord.AuditActionType = "Attempted 2FA Login but Locked Out";
+                auditrecord.DateTimeStamp = DateTime.Now;
+                auditrecord.KeyPostFieldID = 918;
+                // Get email of user logging in 
+                auditrecord.Username = Email;
+
+                _context.AuditRecords.Add(auditrecord);
+                await _context.SaveChangesAsync();
                 _logger.LogWarning("User with ID '{UserId}' account locked out.", user.Id);
                 return RedirectToPage("./Lockout");
             }
             else
             {
+                // Login failed attempt - create an audit record
+                var auditrecord = new AuditRecord();
+                auditrecord.AuditActionType = "Failed 2FA Login";
+                auditrecord.DateTimeStamp = DateTime.Now;
+                auditrecord.KeyPostFieldID = 919;
+                // save the email used for the failed login
+                auditrecord.Username = Email;
+
+                // add log to audit record
+                _context.AuditRecords.Add(auditrecord);
+                await _context.SaveChangesAsync();
+
                 _logger.LogWarning("Invalid authenticator code entered for user with ID '{UserId}'.", user.Id);
                 ModelState.AddModelError(string.Empty, "Invalid authenticator code.");
                 return Page();

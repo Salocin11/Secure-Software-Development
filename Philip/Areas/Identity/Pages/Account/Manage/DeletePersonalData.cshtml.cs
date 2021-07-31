@@ -79,7 +79,7 @@ namespace Philip.Areas.Identity.Pages.Account.Manage
 
             // Create an auditrecord object
             var auditrecord = new AuditRecord();
-            auditrecord.AuditActionType = "Delete Account";
+            auditrecord.AuditActionType = "Delete Personal_Data/Account";
             auditrecord.DateTimeStamp = DateTime.Now;
             auditrecord.KeyPostFieldID = 939;
             // Get email of user logging in 
