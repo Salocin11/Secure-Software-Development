@@ -1,0 +1,51 @@
+﻿@page
+@model Philip.Pages.Comments.ManageAllCommentsModel
+@{
+    ViewData["Title"] = "Manage All Comments";
+}
+
+<h1>Manage Comments</h1>
+<br />
+@if (Model.IsDisplayable)
+{
+    <script>alert("No Articles Found")</script>
+}
+<dd class="col-sm-10">
+    @for (int i = 0; i < Model.CommentsList.Count; i++)
+    {
+        <p>@Html.DisplayFor(modelItem => Model.Article.Title) | Article id: @Html.DisplayFor(modelItem => Model.Article.ID)</p>
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Comment</th>
+                <th></th>
+            </tr>
+
+            @for (int j = 0; j < Model.CommentsList[i].Count; j++)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.CommentsList[i][j].CommentName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.CommentsList[i][j].CommentWords)
+                    </td>
+                    <td>
+                        @if (Model.IsDeleteableList[i])
+                        {
+                            <form method="POST">
+                                <input type="hidden" value="@Model.CommentsList[i][j].CommentID" name="commentId" />
+                                <input type="hidden" value="@Model.CommentsList[i][j].ArticleID" name="articleId" />
+                                <div class="form-group">
+                                    <input type="submit" value="Delete" class="btn btn-danger" />
+                                </div>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+
+        </table>
+    }
+</dd>
+<a asp-page="../Manage">Back to Website Management</a>

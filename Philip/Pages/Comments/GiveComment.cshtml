@@ -1,0 +1,40 @@
+﻿@page
+@model Philip.Pages.Comments.GiveCommentModel
+@{
+    ViewData["Title"] = "GiveComment";
+}
+
+<h1>Give Review for @Model.Article.Title</h1>
+
+<h4>Shoe</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <input type="hidden" value="@Model.Id" name="id" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label class="control-label">Name</label>
+                <input asp-for="Comment.CommentName" class="form-control" />
+                <span asp-validation-for="Comment.CommentName" class="text-danger"></span>
+            </div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label class="control-label">Review</label>
+                <textarea asp-for="Comment.CommentWords" class="form-control"></textarea>
+                <span asp-validation-for="Comment.CommentWords" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="../Article/Details" asp-route-id="@Model.Id">Back to Details</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

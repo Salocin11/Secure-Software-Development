@@ -1,0 +1,40 @@
+﻿@page
+@model Philip.Pages.Comments.ManageCommentsModel
+@{
+    ViewData["Title"] = "Manage Comments";
+}
+
+<h1>Manage Comments</h1>
+<br />
+<dd class="col-sm-10">
+    <table class="table">
+        <tr>
+            <th>Name</th>
+            <th>Comment</th>
+            <th></th>
+        </tr>
+        @foreach (var comments in Model.Comments)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => comments.CommentName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => comments.CommentWords)
+                </td>
+                <td>
+                    @if (Model.deleteable)
+                    {
+                        <form method="POST">
+                            <input type="hidden" value="@comments.CommentID" name="commentId" />
+                            <input type="hidden" value="@comments.ArticleID" name="articleId" />
+                            <div class="form-group">
+                                <input type="submit" value="Delete" class="btn btn-danger" />
+                            </div>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+</dd>

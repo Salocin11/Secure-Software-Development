@@ -37,6 +37,42 @@
         </dd>
     </dl>
 </div>
+<br />
+<div class="text-center">
+
+        <a asp-page="../Comments/GiveComment" asp-route-id="@Model.Article.ID" class="btn btn-primary" style="margin-bottom:20px;">Give Review</a>
+
+</div>
+<br />
+<dd class="col-sm-10">
+    <table class="table">
+        <tr>
+            <th>Name</th>
+            <th>Review</th>
+        </tr>
+        @foreach (var comments in Model.Comments)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => comments.CommentName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => comments.CommentWords)
+                </td>
+            </tr>
+        }
+    </table>
+</dd>
+<div class="text-center">
+    <a asp-page="../Payment/CheckOut" asp-route-id="@Model.Article.ID" class="btn btn-primary" style="padding-right:10px;">Buy Now</a> |
+    <a asp-page="./Index" class="btn btn-primary" style="padding-left:10px;">Back to List</a>
+    <br />
+    <br />
+    @*@if (Model.isAuth)
+        {
+            <a asp-page="../Reviews/ManageReviews"asp-route-id="@Model.Shoe.ShoeID" class="btn btn-primary" style="padding-left:10px;">Manage Reviews</a>
+        }*@
+</div>
 <div>
     <a asp-page="./Edit" asp-route-id="@Model.Article.ID">Edit</a> |
     <a asp-page="./Index">Back to List</a>
