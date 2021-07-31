@@ -79,7 +79,7 @@ namespace Philip.Pages.Articles
                             var userID = User.Identity.Name.ToString();
                             auditrecord.Username = userID;
                             auditrecord.OldValue = oldval;
-                            auditrecord.NewValue = "";
+
                             _context.AuditRecords.Add(auditrecord);
                             await _context.SaveChangesAsync();
                         }

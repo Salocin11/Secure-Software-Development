@@ -54,7 +54,6 @@ namespace Philip.Pages.Roles
             // Get current logged-in user
             var userID = User.Identity.Name.ToString();
             auditrecord.Username = userID;
-            auditrecord.OldValue = "";
             auditrecord.NewValue = "Role Name: " + ApplicationRole.Name +
                                    "\r\n --------Description :" + ApplicationRole.Description;
 

@@ -42,6 +42,7 @@ namespace Philip.Areas.Identity.Pages.Account
             // Get current logged-in user
             var userID = User.Identity.Name.ToString();
             auditrecord.Username = userID;
+
             //add logs to audit record
             _context.AuditRecords.Add(auditrecord);
             await _context.SaveChangesAsync();

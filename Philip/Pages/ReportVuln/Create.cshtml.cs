@@ -55,7 +55,6 @@ namespace Philip.Pages.ReportVuln
                 auditrecord.DateTimeStamp = DateTime.Now;
                 auditrecord.KeyPostFieldID = Feedback.ID;
                 auditrecord.Username = Feedback.Email;
-                auditrecord.OldValue = "";
                 auditrecord.NewValue = "Title: " + Feedback.Title +
                                        "\r\n --------Email :" + Feedback.Email +
                                        "\r\n --------Content: " + Feedback.Content;
