@@ -50,7 +50,24 @@ namespace Philip.Pages.ReportVuln
             if (Feedback != null)
             {
                 _context.Feedback.Remove(Feedback);
-                await _context.SaveChangesAsync();
+
+                if (await _context.SaveChangesAsync() > 0)
+                {
+                    // Create an auditrecord object
+                    var auditrecord = new AuditRecord();
+                    auditrecord.AuditActionType = "Delete Vulnerability FeedBack";
+                    auditrecord.DateTimeStamp = DateTime.Now;
+                    auditrecord.KeyPostFieldID = Feedback.ID;
+                    // Get current logged-in user
+                    var userID = User.Identity.Name.ToString();
+                    auditrecord.Username = userID;
+                    auditrecord.OldValue = "Title: " + Feedback.Title +
+                                           "\r\n --------Email :" + Feedback.Email +
+                                           "\r\n --------Content: " + Feedback.Content;
+
+                    _context.AuditRecords.Add(auditrecord);
+                    await _context.SaveChangesAsync();
+                }
             }
 
             return RedirectToPage("./Index");

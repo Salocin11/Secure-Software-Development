@@ -14,13 +14,16 @@ namespace Philip.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<GenerateRecoveryCodesModel> _logger;
+        private readonly Philip.Data.PhilipContext _context;
 
         public GenerateRecoveryCodesModel(
             UserManager<ApplicationUser> userManager,
-            ILogger<GenerateRecoveryCodesModel> logger)
+            ILogger<GenerateRecoveryCodesModel> logger,
+            Philip.Data.PhilipContext context)
         {
             _userManager = userManager;
             _logger = logger;
+            _context = context;
         }
 
         [TempData]
@@ -67,6 +70,18 @@ namespace Philip.Areas.Identity.Pages.Account.Manage
 
             _logger.LogInformation("User with ID '{UserId}' has generated new 2FA recovery codes.", userId);
             StatusMessage = "You have generated new recovery codes.";
+
+            // Create an auditrecord object
+            var auditrecord = new AuditRecord();
+            auditrecord.AuditActionType = "Reset/Genenrate 2FA Recovery Codes";
+            auditrecord.DateTimeStamp = DateTime.Now;
+            auditrecord.KeyPostFieldID = 936;
+            // Get email of user logging in 
+            var userID = User.Identity.Name.ToString();
+            auditrecord.Username = userID;
+
+            _context.AuditRecords.Add(auditrecord);
+            await _context.SaveChangesAsync();
             return RedirectToPage("./ShowRecoveryCodes");
         }
     }

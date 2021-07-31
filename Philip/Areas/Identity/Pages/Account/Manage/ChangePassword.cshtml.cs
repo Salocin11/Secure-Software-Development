@@ -15,15 +15,18 @@ namespace Philip.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<ChangePasswordModel> _logger;
+        private readonly Philip.Data.PhilipContext _context;
 
         public ChangePasswordModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<ChangePasswordModel> logger)
+            ILogger<ChangePasswordModel> logger,
+            Philip.Data.PhilipContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _context = context;
         }
 
         [BindProperty]
@@ -92,6 +95,19 @@ namespace Philip.Areas.Identity.Pages.Account.Manage
             }
 
             await _signInManager.RefreshSignInAsync(user);
+
+            // Create an auditrecord object
+            var auditrecord = new AuditRecord();
+            auditrecord.AuditActionType = "Change Password";
+            auditrecord.DateTimeStamp = DateTime.Now;
+            auditrecord.KeyPostFieldID = 933;
+            // Get email of user logging in 
+            var userID = User.Identity.Name.ToString();
+            auditrecord.Username = userID;
+
+            _context.AuditRecords.Add(auditrecord);
+            await _context.SaveChangesAsync();
+
             _logger.LogInformation("User changed their password successfully.");
             StatusMessage = "Your password has been changed.";
 

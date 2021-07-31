@@ -6,12 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using Philip.Data;
 using Philip.Models;
 
 namespace Philip.Pages.Articles
 {
-    //[Authorize(Roles = "Admin, Users")]
+    [Authorize(Roles = "Admin")]
     public class EditModel : PageModel
     {
         private readonly Philip.Data.PhilipContext _context;
@@ -19,10 +20,13 @@ namespace Philip.Pages.Articles
         public EditModel(Philip.Data.PhilipContext context)
         {
             _context = context;
+            //if (_context.AuditRecords.Find(i => i.Username == _context.AuditRecords.Find(i => i.)))
         }
 
         [BindProperty]
         public Article Article { get; set; }
+        //changes here
+        static string oldval { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -35,17 +39,27 @@ namespace Philip.Pages.Articles
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
 
+            //get old value of article for audit logs
+            oldval = "Title: " + Article.Title + 
+                "\r\n --------Author :" + Article.Author +
+                "\r\n --------Release Date :" + Article.ReleaseDate + 
+                "\r\n --------Content: " + Article.Content;
+
             if (Article == null)
             {
                 return NotFound();
             }
             return Page();
+
+            
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://aka.ms/RazorPagesCRUD.
+
         public async Task<IActionResult> OnPostAsync(int id)
         {
+
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -56,8 +70,10 @@ namespace Philip.Pages.Articles
             {
                 return HandleDeletedArticle();
             }
+
             _context.Entry(articleToUpdate)
                 .Property("RowVersion").OriginalValue = Article.RowVersion;
+
             if (await TryUpdateModelAsync<Article>(
                 articleToUpdate,
                 "Article",
@@ -65,7 +81,26 @@ namespace Philip.Pages.Articles
             {
                 try
                 {
-                    await _context.SaveChangesAsync();
+                    //await _context.SaveChangesAsync();
+
+                    // Once a record is edited, create an audit record
+                    if (await _context.SaveChangesAsync() > 0)
+                    {
+                        var auditrecord = new AuditRecord();
+                        auditrecord.AuditActionType = "Edit Article";
+                        auditrecord.DateTimeStamp = DateTime.Now;
+                        auditrecord.KeyPostFieldID = Article.ID;
+                        var userID = User.Identity.Name.ToString();
+                        auditrecord.Username = userID;
+                        //snapshot of old value and new value
+                        auditrecord.OldValue = oldval;
+                        auditrecord.NewValue = "Title: " + Article.Title +
+                                               "\r\n --------Author :" + Article.Author +
+                                               "\r\n --------Release Date :" + Article.ReleaseDate +
+                                               "\r\n --------Content: " + Article.Content;
+                        _context.AuditRecords.Add(auditrecord);
+                        await _context.SaveChangesAsync();
+                    }
                     return RedirectToPage("./Index");
                 }
                 catch (DbUpdateConcurrencyException ex)
@@ -88,24 +123,12 @@ namespace Philip.Pages.Articles
             }
             try
             {
-                //await _context.SaveChangesAsync();
-
-                // Once a record is edited, create an audit record
-                if (await _context.SaveChangesAsync() > 0)
-                {
-                    var auditrecord = new AuditRecord();
-                    auditrecord.AuditActionType = "Edit Post Record";
-                    auditrecord.DateTimeStamp = DateTime.Now;
-                    auditrecord.KeyPostFieldID = Article.ID;
-                    var userID = User.Identity.Name.ToString();
-                    auditrecord.Username = userID;
-                    _context.AuditRecords.Add(auditrecord);
-                    await _context.SaveChangesAsync();
-                }
+                await _context.SaveChangesAsync();
             }
+
             catch (DbUpdateConcurrencyException)
             {
-                
+
             }
 
             return Page();

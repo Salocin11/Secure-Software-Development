@@ -34,7 +34,7 @@ namespace Philip
         {
 
             services.AddRazorPages();
-
+            services.AddTransient<PhilipContext>();
             services.AddDbContext<PhilipContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("PhilipContext")));
             services.AddIdentity<ApplicationUser, ApplicationRole>()
@@ -49,6 +49,13 @@ namespace Philip
                 //  options.Conventions.AuthorizeAreaPage("Identity", "/Manage/Accounts");
                 options.Conventions.AuthorizeFolder("/Article");
             });
+            /*
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("EditDelPolicy", policy =>
+                    policy.Requirements.Add(new MinimumAgeRequirement(21)));
+            });
+            */
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings

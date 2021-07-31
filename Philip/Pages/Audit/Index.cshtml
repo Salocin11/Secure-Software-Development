@@ -2,10 +2,10 @@
 @model Philip.Pages.Audit.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Audit Logs";
 }
 
-<h1>Index</h1>
+<h1>Audit Logs</h1>
 
 <p>
     <a asp-page="Create">Create New</a>
@@ -31,6 +31,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.AuditRecord[0].KeyPostFieldID)
             </th>
+            @*<th>
+                @Html.DisplayNameFor(model => model.AuditRecord[0].OldValue)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AuditRecord[0].NewValue)
+            </th>*@
             <th></th>
         </tr>
     </thead>
@@ -49,6 +55,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.KeyPostFieldID)
             </td>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.OldValue)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NewValue)
+            </td>*@
             <td>
                 <a asp-page="./Edit" asp-route-id="@item.Audit_ID">Edit</a> |
                 <a asp-page="./Details" asp-route-id="@item.Audit_ID">Details</a> |

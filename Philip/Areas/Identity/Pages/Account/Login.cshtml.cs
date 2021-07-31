@@ -23,11 +23,6 @@ namespace Philip.Areas.Identity.Pages.Account
         private readonly ILogger<LoginModel> _logger;
         private readonly Philip.Data.PhilipContext _context;
 
-        //default code
-        //public LoginModel(SignInManager<ApplicationUser> signInManager, 
-        //ILogger<LoginModel> logger,
-        //UserManager<ApplicationUser> userManager)
-
         public LoginModel(SignInManager<ApplicationUser> signInManager, 
             ILogger<LoginModel> logger,
             Philip.Data.PhilipContext context,
@@ -91,6 +86,17 @@ namespace Philip.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    // Create an auditrecord object
+                    var auditrecord = new AuditRecord();
+                    auditrecord.AuditActionType = "Login";
+                    auditrecord.DateTimeStamp = DateTime.Now;
+                    auditrecord.KeyPostFieldID = 912;
+                    // Get email of user logging in 
+                    auditrecord.Username = Input.Email;
+
+                    _context.AuditRecords.Add(auditrecord);
+                    await _context.SaveChangesAsync();
+
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }
@@ -100,11 +106,11 @@ namespace Philip.Areas.Identity.Pages.Account
                     var auditrecord = new AuditRecord();
                     auditrecord.AuditActionType = "Failed Login";
                     auditrecord.DateTimeStamp = DateTime.Now;
-                    auditrecord.KeyPostFieldID = 999;
-                    // 999 – dummy record 
-
-                    auditrecord.Username = Input.Email;
+                    auditrecord.KeyPostFieldID = 914;
                     // save the email used for the failed login
+                    auditrecord.Username = Input.Email;
+                    
+                    // add log to audit record
                     _context.AuditRecords.Add(auditrecord);
                     await _context.SaveChangesAsync();
                 }
