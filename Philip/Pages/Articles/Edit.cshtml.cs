@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Philip.Data;
 using Philip.Models;
+using AspNetCoreHero.ToastNotification.Abstractions;
+
 
 namespace Philip.Pages.Articles
 {
@@ -16,10 +18,11 @@ namespace Philip.Pages.Articles
     public class EditModel : PageModel
     {
         private readonly Philip.Data.PhilipContext _context;
-
-        public EditModel(Philip.Data.PhilipContext context)
+        private readonly INotyfService _notyf;
+        public EditModel(Philip.Data.PhilipContext context, INotyfService notyf)
         {
             _context = context;
+            _notyf = notyf;
             //if (_context.AuditRecords.Find(i => i.Username == _context.AuditRecords.Find(i => i.)))
         }
 
@@ -64,6 +67,7 @@ namespace Philip.Pages.Articles
             {
                 return Page();
             }
+            
             var articleToUpdate = await _context.Article
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (articleToUpdate == null)
@@ -100,6 +104,7 @@ namespace Philip.Pages.Articles
                                                "\r\n --------Content: " + Article.Content;
                         _context.AuditRecords.Add(auditrecord);
                         await _context.SaveChangesAsync();
+                        _notyf.Success("Edit was successful!");
                     }
                     return RedirectToPage("./Index");
                 }
@@ -118,6 +123,7 @@ namespace Philip.Pages.Articles
                     await setDbErrorMessage(dbValues, clientValues, _context);
                     Article.RowVersion = (byte[])dbValues.RowVersion;
                     ModelState.Remove("Article.RowVersion");
+                    _notyf.Error("Edit was unsuccessful!");
                 }
 
             }
@@ -130,7 +136,6 @@ namespace Philip.Pages.Articles
             {
 
             }
-
             return Page();
         }
 

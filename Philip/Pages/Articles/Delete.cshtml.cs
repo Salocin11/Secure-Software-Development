@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Philip.Data;
 using Philip.Models;
 using Microsoft.AspNetCore.Authorization;
+using AspNetCoreHero.ToastNotification.Abstractions;
 
 namespace Philip.Pages.Articles
 {
@@ -15,10 +16,12 @@ namespace Philip.Pages.Articles
     public class DeleteModel : PageModel
     {
         private readonly Philip.Data.PhilipContext _context;
+        private readonly INotyfService _notyf;
 
-        public DeleteModel(Philip.Data.PhilipContext context)
+        public DeleteModel(Philip.Data.PhilipContext context,INotyfService notyf)
         {
             _context = context;
+            _notyf = notyf;
         }
 
         [BindProperty]
@@ -47,6 +50,7 @@ namespace Philip.Pages.Articles
                   + "The delete operation was canceled and the current values in the "
                   + "database have been displayed. If you still want to delete this "
                   + "record, click the Delete button again.";
+                _notyf.Error("Delete was unsuccessful!");
 
             }
             return Page();
@@ -82,7 +86,8 @@ namespace Philip.Pages.Articles
                         
                     }
                 }
-               
+                _notyf.Success("Delete was successful!");
+
                 return RedirectToPage("./Index");
             }
             catch (DbUpdateConcurrencyException)

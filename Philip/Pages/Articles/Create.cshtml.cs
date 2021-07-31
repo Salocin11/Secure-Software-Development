@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
 using Philip.Data;
 using Philip.Models;
+using AspNetCoreHero.ToastNotification.Abstractions;
 
 namespace Philip.Pages.Articles
 {
@@ -15,10 +16,12 @@ namespace Philip.Pages.Articles
     public class CreateModel : PageModel
     {
         private readonly Philip.Data.PhilipContext _context;
+        private readonly INotyfService _notyf;
 
-        public CreateModel(Philip.Data.PhilipContext context)
+        public CreateModel(Philip.Data.PhilipContext context,INotyfService notyf)
         {
             _context = context;
+            _notyf = notyf;
         }
 
         public IActionResult OnGet()
@@ -38,6 +41,7 @@ namespace Philip.Pages.Articles
                 return Page();
             }
 
+            _notyf.Success("Submission was successful!");
             _context.Article.Add(Article);
             //await _context.SaveChangesAsync();
 
