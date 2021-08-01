@@ -12,16 +12,18 @@ using AspNetCoreHero.ToastNotification.Abstractions;
 
 namespace Philip.Pages.Articles
 {
-    [Authorize(Roles = "Admin, User")]
+    //[Authorize(Policy = "EditPolicy")]
     public class DeleteModel : PageModel
     {
         private readonly Philip.Data.PhilipContext _context;
         private readonly INotyfService _notyf;
+        private readonly IAuthorizationService _authorizationService;
 
-        public DeleteModel(Philip.Data.PhilipContext context,INotyfService notyf)
+        public DeleteModel(Philip.Data.PhilipContext context,INotyfService notyf, IAuthorizationService authorizationService)
         {
             _context = context;
             _notyf = notyf;
+            _authorizationService = authorizationService;
         }
 
         [BindProperty]
@@ -43,6 +45,9 @@ namespace Philip.Pages.Articles
             {
                 return NotFound();
             }
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, Article, "EditPolicy");
+            if (!authorizationResult.Succeeded)
+                return new ForbidResult();
             if (concurrencyError.GetValueOrDefault())
             {
                 ConcurrencyErrorMessage = "The record you attempted to delete "

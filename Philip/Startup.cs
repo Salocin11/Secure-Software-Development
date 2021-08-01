@@ -12,10 +12,11 @@ using Microsoft.EntityFrameworkCore;
 using Philip.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.Authorization;
 using Philip.Models;
 using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
-
+using Philip.Services;
 
 namespace Philip
 {
@@ -32,7 +33,6 @@ namespace Philip
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddRazorPages();
             services.AddTransient<PhilipContext>();
             services.AddDbContext<PhilipContext>(options =>
@@ -49,6 +49,15 @@ namespace Philip
                 //  options.Conventions.AuthorizeAreaPage("Identity", "/Manage/Accounts");
                 options.Conventions.AuthorizeFolder("/Article");
             });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("EditPolicy", policy =>
+                    policy.Requirements.Add(new SameAuthorRequirement()));
+            });
+
+            services.AddSingleton<IAuthorizationHandler, ArticleAuthorizationHandler>();
+            //services.AddSingleton<IAuthorizationHandler, ArticleAuthorizationCrudHandler>();
+
             /*
             services.AddAuthorization(options =>
             {

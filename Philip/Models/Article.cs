@@ -27,6 +27,7 @@ namespace Philip.Models
         [Timestamp]
         public byte[] RowVersion { get; set; }
 
+
         public Article()
         {
             instances++;

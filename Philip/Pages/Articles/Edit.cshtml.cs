@@ -14,15 +14,17 @@ using AspNetCoreHero.ToastNotification.Abstractions;
 
 namespace Philip.Pages.Articles
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Policy = "EditPolicy")]
     public class EditModel : PageModel
     {
         private readonly Philip.Data.PhilipContext _context;
         private readonly INotyfService _notyf;
-        public EditModel(Philip.Data.PhilipContext context, INotyfService notyf)
+        private readonly IAuthorizationService _authorizationService;
+        public EditModel(Philip.Data.PhilipContext context, INotyfService notyf, IAuthorizationService authorizationService)
         {
             _context = context;
             _notyf = notyf;
+            _authorizationService = authorizationService;
             //if (_context.AuditRecords.Find(i => i.Username == _context.AuditRecords.Find(i => i.)))
         }
 
@@ -52,6 +54,9 @@ namespace Philip.Pages.Articles
             {
                 return NotFound();
             }
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, Article, "EditPolicy");
+            if (!authorizationResult.Succeeded)
+                return new ForbidResult();
             return Page();
 
             

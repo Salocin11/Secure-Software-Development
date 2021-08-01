@@ -72,7 +72,7 @@ namespace Philip.Models
                 await SeedSuperAdminAsync(userManager, roleManager);
                 // Users dont exist
             }
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
 
