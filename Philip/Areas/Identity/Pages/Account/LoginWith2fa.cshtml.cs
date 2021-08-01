@@ -35,8 +35,6 @@ namespace Philip.Areas.Identity.Pages.Account
 
         public string ReturnUrl { get; set; }
 
-        public string Email { get; set; }
-
         public class InputModel
         {
             [Required]
@@ -49,7 +47,7 @@ namespace Philip.Areas.Identity.Pages.Account
             public bool RememberMachine { get; set; }
         }
 
-        public async Task<IActionResult> OnGetAsync(bool rememberMe, string email, string returnUrl = null)
+        public async Task<IActionResult> OnGetAsync(bool rememberMe, string returnUrl = null)
         {
             // Ensure the user has gone through the username & password screen first
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
@@ -61,8 +59,6 @@ namespace Philip.Areas.Identity.Pages.Account
 
             ReturnUrl = returnUrl;
             RememberMe = rememberMe;
-            Email = email;
-
             return Page();
         }
 
@@ -93,7 +89,7 @@ namespace Philip.Areas.Identity.Pages.Account
                 auditrecord.DateTimeStamp = DateTime.Now;
                 auditrecord.KeyPostFieldID = 917;
                 // Get email of user logging in 
-                auditrecord.Username = Email;
+                auditrecord.Username = user.Email;
 
                 _context.AuditRecords.Add(auditrecord);
                 await _context.SaveChangesAsync();
@@ -109,7 +105,7 @@ namespace Philip.Areas.Identity.Pages.Account
                 auditrecord.DateTimeStamp = DateTime.Now;
                 auditrecord.KeyPostFieldID = 918;
                 // Get email of user logging in 
-                auditrecord.Username = Email;
+                auditrecord.Username = user.Email;
 
                 _context.AuditRecords.Add(auditrecord);
                 await _context.SaveChangesAsync();
@@ -124,7 +120,7 @@ namespace Philip.Areas.Identity.Pages.Account
                 auditrecord.DateTimeStamp = DateTime.Now;
                 auditrecord.KeyPostFieldID = 919;
                 // save the email used for the failed login
-                auditrecord.Username = Email;
+                auditrecord.Username = user.Email;
 
                 // add log to audit record
                 _context.AuditRecords.Add(auditrecord);
