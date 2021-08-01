@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Philip.Data;
 using Philip.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Philip.Pages.ReportVuln
 {
+    [Authorize(Roles = "Admin")]
     public class IndexModel : PageModel
     {
         private readonly Philip.Data.PhilipContext _context;
