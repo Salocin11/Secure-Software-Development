@@ -44,18 +44,18 @@ namespace Philip.Pages.Roles
             
             // Method - return a string showing a list of users based on specified role as parameter
             string strListUsersInRole = "";
-            string roleid = _roleManager.Roles.SingleOrDefault(u => u.Name == rolename).Id;
+            string roleid = _roleManager.Roles.AsNoTracking().SingleOrDefault(u => u.Name == rolename).Id;
 
             // Get no. of users for each specified role
-            var count = _context.UserRoles.Where(u => u.RoleId == roleid).Count();
+            var count = _context.UserRoles.AsNoTracking().Where(u => u.RoleId == roleid).Count();
             usercountinrole = count;
 
             //Get a list of users for each specified role
-            var listusers = _context.UserRoles.Where(u => u.RoleId == roleid);
+            var listusers = _context.UserRoles.AsNoTracking().Where(u => u.RoleId == roleid);
 
             foreach (var oParam in listusers)
             { // loop thru each objects- get username based on userid and append to the returned string
-                var userobj = _context.Users.SingleOrDefault(s => s.Id == oParam.UserId);
+                var userobj = _context.Users.AsNoTracking().SingleOrDefault(s => s.Id == oParam.UserId);
                 strListUsersInRole += "[" + userobj.UserName + "] ";
             }
             return strListUsersInRole;
@@ -80,10 +80,8 @@ namespace Philip.Pages.Roles
             {
                 return RedirectToPage("Manage");
             }
-            ApplicationUser AppUser = _context.Users.SingleOrDefault(u => u.UserName ==
-           selectedusername);
+            ApplicationUser AppUser = await _userManager.FindByNameAsync(selectedusername);
             ApplicationRole AppRole = await _roleManager.FindByNameAsync(selectedrolename);
-
             IdentityResult roleResult = await _userManager.AddToRoleAsync(AppUser, AppRole.Name);
 
             if (roleResult.Succeeded)
@@ -115,7 +113,7 @@ namespace Philip.Pages.Roles
             {
                 return RedirectToPage("Manage");
             }
-            ApplicationUser user = _context.Users.Where(u => u.UserName == delusername).FirstOrDefault();
+            ApplicationUser user = await _userManager.FindByNameAsync(delusername);
             if (await _userManager.IsInRoleAsync(user, delrolename))
             {
                 await _userManager.RemoveFromRoleAsync(user, delrolename);
