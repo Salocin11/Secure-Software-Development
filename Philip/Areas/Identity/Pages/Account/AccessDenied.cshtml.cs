@@ -19,18 +19,21 @@ namespace Philip.Areas.Identity.Pages.Account
         }
 
         public async Task<IActionResult> OnGetAsync()
-        {        
-            // Create an auditrecord object
-            var auditrecord = new AuditRecord();
-            auditrecord.AuditActionType = "Access Denied";
-            auditrecord.DateTimeStamp = DateTime.Now;
-            auditrecord.KeyPostFieldID = 999401;
-            // Get email of user logging in 
-            var userID = User.Identity.Name.ToString();
-            auditrecord.Username = userID;
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                // Create an auditrecord object
+                var auditrecord = new AuditRecord();
+                auditrecord.AuditActionType = "Access Denied";
+                auditrecord.DateTimeStamp = DateTime.Now;
+                auditrecord.KeyPostFieldID = 999401;
+                // Get email of user logging in 
+                var userID = User.Identity.Name.ToString();
+                auditrecord.Username = userID;
 
-            _context.AuditRecords.Add(auditrecord);
-            await _context.SaveChangesAsync();
+                _context.AuditRecords.Add(auditrecord);
+                await _context.SaveChangesAsync();
+            }
             return null;
         }
     }
